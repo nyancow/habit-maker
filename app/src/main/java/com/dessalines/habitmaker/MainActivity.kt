@@ -95,13 +95,13 @@ class MainActivity : AppCompatActivity() {
                         composable(
                             route = "habits?id={id}",
                             arguments =
-                            listOf(
-                                navArgument("id") {
-                                    type = NavType.StringType
-                                    nullable = true
-                                    defaultValue = null
-                                },
-                            ),
+                                listOf(
+                                    navArgument("id") {
+                                        type = NavType.StringType
+                                        nullable = true
+                                        defaultValue = null
+                                    },
+                                ),
                         ) {
                             val id = it.arguments?.getString("id")?.toInt()
 

@@ -35,6 +35,7 @@ enum class HabitSort(
     Points(R.string.points),
     Score(R.string.score),
     Streak(R.string.streak),
+
     /**
      * Whether its completed or not.
      */
@@ -48,4 +49,3 @@ enum class HabitSortOrder(
     Ascending(R.string.ascending),
     Descending(R.string.descending),
 }
-

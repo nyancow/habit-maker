@@ -70,7 +70,7 @@ fun HabitsPane(
                         },
                     ) {
                         IconButton(
-                            onClick = onSettingsClick
+                            onClick = onSettingsClick,
                         ) {
                             Icon(
                                 Icons.Outlined.Settings,
@@ -78,7 +78,7 @@ fun HabitsPane(
                             )
                         }
                     }
-                }
+                },
             )
         },
         modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),

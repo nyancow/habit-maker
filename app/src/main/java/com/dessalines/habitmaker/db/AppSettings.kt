@@ -29,12 +29,12 @@ data class AppSettings(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
         name = "theme",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val theme: Int,
     @ColumnInfo(
         name = "theme_color",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val themeColor: Int,
     @ColumnInfo(
@@ -44,12 +44,12 @@ data class AppSettings(
     val lastVersionCodeViewed: Int,
     @ColumnInfo(
         name = "sort",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val sort: Int,
     @ColumnInfo(
         name = "sort_order",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val sortOrder: Int,
     @ColumnInfo(
@@ -59,27 +59,27 @@ data class AppSettings(
     val completedCount: Int,
     @ColumnInfo(
         name = "hide_completed",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideCompleted: Int,
     @ColumnInfo(
         name = "hide_archived",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideArchived: Int,
     @ColumnInfo(
         name = "hide_points_on_home",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hidePointsOnHome: Int,
     @ColumnInfo(
         name = "hide_score_on_home",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideScoreOnHome: Int,
     @ColumnInfo(
         name = "hide_streak_on_home",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideStreakOnHome: Int,
 )
@@ -88,22 +88,22 @@ data class SettingsUpdate(
     val id: Int,
     @ColumnInfo(
         name = "theme",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val theme: Int,
     @ColumnInfo(
         name = "theme_color",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val themeColor: Int,
     @ColumnInfo(
         name = "sort",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val sort: Int,
     @ColumnInfo(
         name = "sort_order",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val sortOrder: Int,
     @ColumnInfo(
@@ -113,27 +113,27 @@ data class SettingsUpdate(
     val completedCount: Int,
     @ColumnInfo(
         name = "hide_completed",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideCompleted: Int,
     @ColumnInfo(
         name = "hide_archived",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideArchived: Int,
     @ColumnInfo(
         name = "hide_points_on_home",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hidePointsOnHome: Int,
     @ColumnInfo(
         name = "hide_score_on_home",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideScoreOnHome: Int,
     @ColumnInfo(
         name = "hide_streak_on_home",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val hideStreakOnHome: Int,
 )

@@ -72,7 +72,7 @@ fun SettingsScreen(
     var sortOrderState = HabitSortOrder.entries[settings?.sortOrder ?: 0]
 
     var hideCompletedState = (settings?.hideCompleted ?: 0).toBool()
-    var hideArchivedState = (settings?.hideArchived?: 0).toBool()
+    var hideArchivedState = (settings?.hideArchived ?: 0).toBool()
     var hidePointsOnHomeState = (settings?.hidePointsOnHome ?: 0).toBool()
     var hideScoreOnHomeState = (settings?.hideScoreOnHome ?: 0).toBool()
     var hideStreakOnHomeState = (settings?.hideStreakOnHome ?: 0).toBool()
@@ -359,7 +359,6 @@ fun SettingsScreen(
                             )
                         },
                     )
-
 
                     Preference(
                         title = { Text(stringResource(R.string.backup_database)) },

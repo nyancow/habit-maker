@@ -128,10 +128,10 @@ fun HabitDetailPane(
                 Text(
                     text = stringResource(R.string.no_encouragements),
                     modifier =
-                    Modifier.padding(
-                        horizontal = LARGE_PADDING,
-                        vertical = padding.calculateTopPadding(),
-                    ),
+                        Modifier.padding(
+                            horizontal = LARGE_PADDING,
+                            vertical = padding.calculateTopPadding(),
+                        ),
                 )
             }
 
@@ -143,14 +143,13 @@ fun HabitDetailPane(
 
             Box(
                 modifier =
-                Modifier
-                    .padding(padding)
-                    .imePadding(),
+                    Modifier
+                        .padding(padding)
+                        .imePadding(),
             ) {
                 LazyColumn(
                     state = listState,
                 ) {
-
                 }
             }
         },
@@ -165,14 +164,13 @@ fun HabitDetails(habit: Habit) {
             markdown = habit.notes,
             linkColor = MaterialTheme.colorScheme.primary,
             modifier =
-            Modifier
-                .padding(
-                    top = 0.dp,
-                    bottom = SMALL_PADDING,
-                    start = LARGE_PADDING,
-                    end = LARGE_PADDING,
-                )
-                .fillMaxWidth(),
+                Modifier
+                    .padding(
+                        top = 0.dp,
+                        bottom = SMALL_PADDING,
+                        start = LARGE_PADDING,
+                        end = LARGE_PADDING,
+                    ).fillMaxWidth(),
         )
     }
 }

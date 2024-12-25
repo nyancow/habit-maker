@@ -36,12 +36,12 @@ data class Habit(
     val name: String,
     @ColumnInfo(
         name = "frequency",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val frequency: Int,
     @ColumnInfo(
         name = "times_per_frequency",
-        defaultValue = "1"
+        defaultValue = "1",
     )
     val timesPerFrequency: Int,
     @ColumnInfo(
@@ -50,27 +50,27 @@ data class Habit(
     val notes: String?,
     @ColumnInfo(
         name = "archived",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val archived: Int,
     @ColumnInfo(
         name = "points",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val points: Int,
     @ColumnInfo(
         name = "score",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val score: Int,
     @ColumnInfo(
         name = "streak",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val streak: Int,
     @ColumnInfo(
         name = "completed",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val completed: Int,
 )
@@ -83,12 +83,12 @@ data class HabitInsert(
     val name: String,
     @ColumnInfo(
         name = "frequency",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val frequency: Int,
     @ColumnInfo(
         name = "times_per_frequency",
-        defaultValue = "1"
+        defaultValue = "1",
     )
     val timesPerFrequency: Int,
     @ColumnInfo(
@@ -106,12 +106,12 @@ data class HabitUpdate(
     val name: String,
     @ColumnInfo(
         name = "frequency",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val frequency: Int,
     @ColumnInfo(
         name = "times_per_frequency",
-        defaultValue = "1"
+        defaultValue = "1",
     )
     val timesPerFrequency: Int,
     @ColumnInfo(

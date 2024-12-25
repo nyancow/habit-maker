@@ -144,20 +144,21 @@ class EncouragementViewModelFactory(
     }
 }
 
-val sampleEncouragements = arrayOf(
-    Encouragement(
-        id = 1,
-        habitId = 1,
-        content = "Great job, keep going!",
-    ),
-    Encouragement(
-        id = 2,
-        habitId = 1,
-        content = "Excellent! Remember why you're doing this.",
-    ),
-    Encouragement(
-        id = 3,
-        habitId = 1,
-        content = "Nice! You're almost there!",
+val sampleEncouragements =
+    arrayOf(
+        Encouragement(
+            id = 1,
+            habitId = 1,
+            content = "Great job, keep going!",
+        ),
+        Encouragement(
+            id = 2,
+            habitId = 1,
+            content = "Excellent! Remember why you're doing this.",
+        ),
+        Encouragement(
+            id = 3,
+            habitId = 1,
+            content = "Nice! You're almost there!",
+        ),
     )
-)

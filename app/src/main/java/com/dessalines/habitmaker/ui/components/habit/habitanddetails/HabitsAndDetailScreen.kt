@@ -91,7 +91,7 @@ fun HabitsAndDetailScreen(
                             },
                             onSettingsClick = {
                                 navController.navigate("settings")
-                            }
+                            },
                         )
                     }
                 },

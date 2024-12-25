@@ -144,15 +144,16 @@ class HabitCheckViewModelFactory(
     }
 }
 
-val sampleHabitChecks = arrayOf(
-    HabitCheck(
-        id = 1,
-        habitId = 1,
-        checkTime = 0,
-    ),
-    HabitCheck(
-        id = 2,
-        habitId = 2,
-        checkTime = 0,
-    ),
-)
+val sampleHabitChecks =
+    arrayOf(
+        HabitCheck(
+            id = 1,
+            habitId = 1,
+            checkTime = 0,
+        ),
+        HabitCheck(
+            id = 2,
+            habitId = 2,
+            checkTime = 0,
+        ),
+    )

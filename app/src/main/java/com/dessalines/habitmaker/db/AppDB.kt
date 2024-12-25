@@ -22,8 +22,11 @@ import java.util.concurrent.Executors
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun appSettingsDao(): AppSettingsDao
+
     abstract fun habitDao(): HabitDao
+
     abstract fun encouragementDao(): EncouragementDao
+
     abstract fun habitCheckDao(): HabitCheckDao
 
     companion object {

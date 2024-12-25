@@ -62,7 +62,6 @@ fun HabitForm(
         modifier = Modifier.padding(horizontal = SMALL_PADDING),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
-
         OutlinedTextField(
             label = { Text(stringResource(R.string.title)) },
             singleLine = true,
