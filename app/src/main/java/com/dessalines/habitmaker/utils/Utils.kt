@@ -50,6 +50,17 @@ fun writeData(
 
 fun nameIsValid(name: String): Boolean = name.isNotEmpty()
 
+fun timesPerFrequencyIsValid(
+    timesPerFrequency: Int,
+    frequency: HabitFrequency,
+): Boolean =
+    when (frequency) {
+        HabitFrequency.Daily -> IntRange(1, 1)
+        HabitFrequency.Weekly -> IntRange(1, 7)
+        HabitFrequency.Monthly -> IntRange(1, 28)
+        HabitFrequency.Yearly -> IntRange(1, 365)
+    }.contains(timesPerFrequency)
+
 sealed interface SelectionVisibilityState<out Item> {
     object NoSelection : SelectionVisibilityState<Nothing>
 
