@@ -48,7 +48,7 @@ data class EncouragementInsert(
     @ColumnInfo(
         name = "habit_id",
     )
-    val encouragementId: Int,
+    val habitId: Int,
     @ColumnInfo(
         name = "content",
     )

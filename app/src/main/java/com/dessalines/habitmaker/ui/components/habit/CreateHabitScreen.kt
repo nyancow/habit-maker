@@ -23,6 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.dessalines.habitmaker.R
+import com.dessalines.habitmaker.db.Encouragement
+import com.dessalines.habitmaker.db.EncouragementInsert
 import com.dessalines.habitmaker.db.EncouragementViewModel
 import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.db.HabitInsert
@@ -45,6 +47,7 @@ fun CreateHabitScreen(
     val ctx = LocalContext.current
 
     var habit: Habit? = null
+    var encouragements: List<Encouragement> = listOf()
 
     Scaffold(
         topBar = {
@@ -63,6 +66,10 @@ fun CreateHabitScreen(
             ) {
                 HabitForm(
                     onChange = { habit = it },
+                )
+                EncouragementsForm(
+                    initialEncouragements = encouragements,
+                    onChange = { encouragements = it },
                 )
             }
         },
@@ -86,11 +93,21 @@ fun CreateHabitScreen(
                                         timesPerFrequency = it.timesPerFrequency,
                                         notes = it.notes,
                                     )
-                                val insertedId = habitViewModel.insert(insert)
+                                val insertedHabitId = habitViewModel.insert(insert)
 
                                 // The id is -1 if its a failed insert
-                                if (insertedId != -1L) {
-                                    navController.navigate("habits?id=$insertedId")
+                                if (insertedHabitId != -1L) {
+                                    // Now insert the encouragements
+                                    encouragements.forEach {
+                                        val insert =
+                                            EncouragementInsert(
+                                                habitId = insertedHabitId.toInt(),
+                                                content = it.content,
+                                            )
+                                        encouragementViewModel.insert(insert)
+                                    }
+
+                                    navController.navigate("habits?id=$insertedHabitId")
                                 } else {
                                     Toast
                                         .makeText(
