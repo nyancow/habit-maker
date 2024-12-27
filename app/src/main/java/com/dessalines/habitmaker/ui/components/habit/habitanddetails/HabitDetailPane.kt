@@ -2,15 +2,15 @@ package com.dessalines.habitmaker.ui.components.habit.habitanddetails
 
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.dessalines.habitmaker.R
 import com.dessalines.habitmaker.db.Encouragement
 import com.dessalines.habitmaker.db.Habit
@@ -46,16 +45,20 @@ import com.dessalines.habitmaker.ui.components.common.LARGE_PADDING
 import com.dessalines.habitmaker.ui.components.common.SMALL_PADDING
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
+import com.dessalines.habitmaker.ui.components.habit.habitanddetails.calendars.HabitCalendar
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HabitDetailPane(
-    navController: NavController,
     habit: Habit,
-    encouragements: List<Encouragement>?,
-    habitChecks: List<HabitCheck>?,
+    // TODO maybe I don't need these, because the edit is on a different page?
+    encouragements: List<Encouragement>,
+    habitChecks: List<HabitCheck>,
     isListAndDetailVisible: Boolean,
+    onHabitCheck: (LocalDate) -> Unit,
+    onEditClick: () -> Unit,
     onBackClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -67,13 +70,18 @@ fun HabitDetailPane(
     val showDeleteDialog = remember { mutableStateOf(false) }
     var showMoreDropdown by remember { mutableStateOf(false) }
 
-    // TODO refactor all this
     val (titleText, onBackClick) =
         if (isListAndDetailVisible) {
             Pair(habit.name, null)
         } else {
             Pair(habit.name, onBackClick)
         }
+
+    AreYouSureDialog(
+        show = showDeleteDialog,
+        title = stringResource(R.string.delete),
+        onYes = onDelete,
+    )
 
     Scaffold(
         topBar = {
@@ -105,6 +113,19 @@ fun HabitDetailPane(
                         onDismissRequest = { showMoreDropdown = false },
                     ) {
                         DropdownMenuItem(
+                            text = { Text(stringResource(R.string.edit_habit)) },
+                            onClick = {
+                                showMoreDropdown = false
+                                showDeleteDialog.value = true
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.Edit,
+                                    contentDescription = stringResource(R.string.edit_habit),
+                                )
+                            },
+                        )
+                        DropdownMenuItem(
                             text = { Text(stringResource(R.string.delete)) },
                             onClick = {
                                 showMoreDropdown = false
@@ -123,34 +144,16 @@ fun HabitDetailPane(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
-
-            if (encouragements.isNullOrEmpty()) {
-                Text(
-                    text = stringResource(R.string.no_encouragements),
-                    modifier =
-                        Modifier.padding(
-                            horizontal = LARGE_PADDING,
-                            vertical = padding.calculateTopPadding(),
-                        ),
-                )
-            }
-
-            AreYouSureDialog(
-                show = showDeleteDialog,
-                title = stringResource(R.string.delete),
-                onYes = onDelete,
-            )
-
-            Box(
+            Column(
                 modifier =
                     Modifier
                         .padding(padding)
                         .imePadding(),
             ) {
-                LazyColumn(
-                    state = listState,
-                ) {
-                }
+                HabitCalendar(
+                    habitChecks = habitChecks,
+                    onClickDay = onHabitCheck,
+                )
             }
         },
     )

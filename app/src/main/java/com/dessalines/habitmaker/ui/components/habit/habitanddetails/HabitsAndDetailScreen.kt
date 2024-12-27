@@ -26,7 +26,12 @@ import com.dessalines.habitmaker.db.EncouragementViewModel
 import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitViewModel
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
+import com.dessalines.habitmaker.utils.checkHabitForDay
+import com.dessalines.habitmaker.utils.dateWithoutTime
+import com.dessalines.habitmaker.utils.updateStatsForHabit
 import kotlinx.coroutines.launch
+import java.time.ZoneId
+import java.util.Date
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(
@@ -84,6 +89,11 @@ fun HabitsAndDetailScreen(
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                 }
                             },
+                            onHabitCheck = {
+                                val checkTime = dateWithoutTime(Date()).time
+                                checkHabitForDay(it, checkTime, habitCheckViewModel)
+                                updateStatsForHabit(it, habitViewModel, habitCheckViewModel)
+                            },
                             selectionState = selectionState,
                             isListAndDetailVisible = isListAndDetailVisible,
                             onCreateHabitClick = {
@@ -99,29 +109,47 @@ fun HabitsAndDetailScreen(
                     AnimatedPane {
                         selectedHabitId?.let { habitId ->
 
-                            // TODO
-//                            val habit by habitViewModel.getById(habitId).asLiveData().observeAsState()
-//                            val favListItems by encouragementViewModel.getFromList(habitId).asLiveData().observeAsState()
+                            val habit by habitViewModel
+                                .getById(habitId)
+                                .asLiveData()
+                                .observeAsState()
+                            val encouragements by encouragementViewModel
+                                .getFromList(habitId)
+                                .asLiveData()
+                                .observeAsState()
+                            val habitChecks by habitCheckViewModel
+                                .getFromList(habitId)
+                                .asLiveData()
+                                .observeAsState()
 
-//                            FavListDetailPane(
-//                                navController = navController,
-//                                favListId = habitId,
-//                                habit = habit,
-//                                encouragements = favListItems,
-//                                isListAndDetailVisible = isListAndDetailVisible,
-//                                onBackClick = {
-//                                    scope.launch {
-//                                        navigator.navigateBack()
-//                                    }
-//                                },
-//                                onDelete = {
-//                                    habit?.let {
-//                                        habitViewModel.delete(it)
-//                                        navController.navigateUp()
+                            habit?.let { habit ->
+                                HabitDetailPane(
+                                    habit = habit,
+                                    encouragements = encouragements.orEmpty(),
+                                    habitChecks = habitChecks.orEmpty(),
+                                    isListAndDetailVisible = isListAndDetailVisible,
+                                    onEditClick = {
+                                        navController.navigate("editHabit/${habit.id}")
+                                    },
+                                    onBackClick = {
+                                        scope.launch {
+                                            navigator.navigateBack()
+                                        }
+                                    },
+                                    onDelete = {
+                                        scope.launch {
+                                            habitViewModel.delete(habit)
+                                            navigator.navigateBack()
 //                                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
-//                                    }
-//                                },
-//                            )
+                                        }
+                                    },
+                                    onHabitCheck = {
+                                        val checkTime = it.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                                        checkHabitForDay(habit.id, checkTime, habitCheckViewModel)
+                                        updateStatsForHabit(habit.id, habitViewModel, habitCheckViewModel)
+                                    },
+                                )
+                            }
                         }
                     }
                 },

@@ -120,7 +120,30 @@ data class HabitUpdate(
     val notes: String?,
 )
 
-// TODO add update stats
+@Entity
+data class HabitUpdateStats(
+    val id: Int,
+    @ColumnInfo(
+        name = "points",
+        defaultValue = "0",
+    )
+    val points: Int,
+    @ColumnInfo(
+        name = "score",
+        defaultValue = "0",
+    )
+    val score: Int,
+    @ColumnInfo(
+        name = "streak",
+        defaultValue = "0",
+    )
+    val streak: Int,
+    @ColumnInfo(
+        name = "completed",
+        defaultValue = "0",
+    )
+    val completed: Int,
+)
 
 private const val BY_ID_QUERY = "SELECT * FROM Habit where id = :id"
 
@@ -140,6 +163,9 @@ interface HabitDao {
 
     @Update(entity = Habit::class)
     suspend fun update(habit: HabitUpdate)
+
+    @Update(entity = Habit::class)
+    suspend fun updateStats(habit: HabitUpdateStats)
 
     @Delete
     suspend fun delete(habit: Habit)
@@ -165,6 +191,9 @@ class HabitRepository(
     suspend fun update(habit: HabitUpdate) = habitDao.update(habit)
 
     @WorkerThread
+    suspend fun updateStats(habit: HabitUpdateStats) = habitDao.updateStats(habit)
+
+    @WorkerThread
     suspend fun delete(habit: Habit) = habitDao.delete(habit)
 }
 
@@ -182,6 +211,11 @@ class HabitViewModel(
     fun update(habit: HabitUpdate) =
         viewModelScope.launch {
             repository.update(habit)
+        }
+
+    fun updateStats(habit: HabitUpdateStats) =
+        viewModelScope.launch {
+            repository.updateStats(habit)
         }
 
     fun delete(habit: Habit) =

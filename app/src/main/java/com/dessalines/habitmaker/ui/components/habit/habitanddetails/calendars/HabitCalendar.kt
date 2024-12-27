@@ -1,0 +1,153 @@
+package com.dessalines.habitmaker.ui.components.habit.habitanddetails.calendars
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import com.dessalines.habitmaker.db.HabitCheck
+import com.dessalines.habitmaker.ui.components.common.MEDIUM_PADDING
+import com.kizitonwose.calendar.compose.HorizontalCalendar
+import com.kizitonwose.calendar.compose.rememberCalendarState
+import com.kizitonwose.calendar.core.CalendarDay
+import com.kizitonwose.calendar.core.CalendarMonth
+import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import java.time.Instant
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.format.TextStyle
+import java.util.Locale
+
+@Composable
+fun HabitCalendar(
+    habitChecks: List<HabitCheck>,
+    onClickDay: (LocalDate) -> Unit,
+) {
+    val checkDates = buildLocalDatesFromHabitChecks(habitChecks)
+
+    val currentMonth = remember { YearMonth.now() }
+    val startMonth = remember { currentMonth.minusMonths(100) }
+    val endMonth = remember { currentMonth }
+    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
+
+    val state =
+        rememberCalendarState(
+            startMonth = startMonth,
+            endMonth = endMonth,
+            firstVisibleMonth = currentMonth,
+            firstDayOfWeek = firstDayOfWeek,
+        )
+
+    HorizontalCalendar(
+        state = state,
+        monthHeader = { month ->
+            MonthHeader(month)
+        },
+        dayContent = {
+            Day(
+                day = it,
+                // TODO probably a more efficient way to do this
+                // Maybe a hashmap of dates?
+                checked = checkDates.contains(it.date),
+                onClick = { onClickDay(it.date) },
+            )
+        },
+    )
+}
+
+@Composable
+fun MonthHeader(
+    calendarMonth: CalendarMonth,
+    modifier: Modifier = Modifier,
+) {
+    val daysOfWeek = calendarMonth.weekDays.first().map { it.date.dayOfWeek }
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+    ) {
+        val locale = Locale.getDefault()
+        Text(
+            text = calendarMonth.yearMonth.month.getDisplayName(TextStyle.SHORT, locale),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            for (dayOfWeek in daysOfWeek) {
+                Text(
+                    text = dayOfWeek.getDisplayName(TextStyle.SHORT, locale),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun Day(
+    day: CalendarDay,
+    checked: Boolean,
+    onClick: (CalendarDay) -> Unit,
+) {
+    //  Only allow clicking dates in the past
+    val allowedDate = day.date.isBefore(LocalDate.now().plusDays(1))
+    val isToday = day.date == LocalDate.now()
+
+    Box(
+        modifier =
+            Modifier
+                .aspectRatio(1f)
+                .clickable(
+                    enabled = allowedDate,
+                    onClick = { onClick(day) },
+                ),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (checked) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null,
+            )
+        } else {
+            Text(
+                text = day.date.dayOfMonth.toString(),
+                // Underline today's date
+                textDecoration =
+                    if (isToday) {
+                        TextDecoration.Underline
+                    } else {
+                        TextDecoration.None
+                    },
+                color =
+                    if (allowedDate) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.outline
+                    },
+            )
+        }
+    }
+}
+
+fun buildLocalDatesFromHabitChecks(habitChecks: List<HabitCheck>) =
+    habitChecks.map {
+        Instant.ofEpochMilli(it.checkTime).atZone(ZoneId.systemDefault()).toLocalDate()
+    }

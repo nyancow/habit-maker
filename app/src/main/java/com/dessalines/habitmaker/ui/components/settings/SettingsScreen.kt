@@ -66,6 +66,12 @@ fun SettingsScreen(
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
     val ctx = LocalContext.current
 
+    // TODO split this into thumb-key style:
+    // Look and feel,
+    // Backup and restore
+    // Behavior
+    // Guide
+
     var themeState = ThemeMode.entries[settings?.theme ?: 0]
     var themeColorState = ThemeColor.entries[settings?.themeColor ?: 0]
     var sortState = HabitSort.entries[settings?.sort ?: 0]

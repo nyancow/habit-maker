@@ -13,6 +13,8 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -38,6 +40,7 @@ import com.dessalines.habitmaker.ui.components.common.LARGE_PADDING
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
+import com.dessalines.habitmaker.utils.toBool
 import kotlin.collections.orEmpty
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -45,6 +48,7 @@ import kotlin.collections.orEmpty
 fun HabitsPane(
     habits: List<Habit>?,
     onHabitClick: (habitId: Int) -> Unit,
+    onHabitCheck: (habitId: Int) -> Unit,
     onCreateHabitClick: () -> Unit,
     onSettingsClick: () -> Unit,
     selectionState: SelectionVisibilityState<Int>,
@@ -102,6 +106,7 @@ fun HabitsPane(
                         HabitRow(
                             habit = habit,
                             onClick = { onHabitClick(habit.id) },
+                            onCheck = { onHabitCheck(habit.id) },
                             selected = selected,
                         )
                     }
@@ -143,20 +148,42 @@ fun HabitsPane(
 fun HabitRow(
     habit: Habit,
     selected: Boolean = false,
+    onCheck: () -> Unit,
     onClick: () -> Unit,
 ) {
     val containerColor =
         if (!selected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant
 
+    val (icon, tint) =
+        if (habit.completed.toBool()) {
+            Pair(Icons.Outlined.Check, MaterialTheme.colorScheme.onSurface)
+        } else {
+            Pair(Icons.Outlined.Close, MaterialTheme.colorScheme.outline)
+        }
+
     ListItem(
         headlineContent = {
             Text(habit.name)
+        },
+        supportingContent = {
+            Text("completed = ${habit.completed}")
         },
         colors = ListItemDefaults.colors(containerColor = containerColor),
         modifier =
             Modifier.Companion.clickable {
                 onClick()
             },
+        trailingContent = {
+            IconButton(
+                onClick = onCheck,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    tint = tint,
+                    contentDescription = null,
+                )
+            }
+        },
     )
 }
 
@@ -165,6 +192,7 @@ fun HabitRow(
 fun HabitRowPreview() {
     HabitRow(
         habit = sampleHabit,
+        onCheck = {},
         onClick = {},
     )
 }

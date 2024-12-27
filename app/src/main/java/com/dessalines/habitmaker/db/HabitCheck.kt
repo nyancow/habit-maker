@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.room.ColumnInfo
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -48,7 +47,7 @@ data class HabitCheckInsert(
     @ColumnInfo(
         name = "habit_id",
     )
-    val habitCheckId: Int,
+    val habitId: Int,
     @ColumnInfo(
         name = "check_time",
     )
@@ -64,28 +63,29 @@ data class HabitCheckUpdate(
     val checkTime: Long,
 )
 
-private const val BY_ID_QUERY = "SELECT * FROM HabitCheck where id = :habitCheckId"
+private const val BY_HABIT_ID_QUERY = "SELECT * FROM HabitCheck where habit_id = :habitId order by check_time"
 
 @Dao
 interface HabitCheckDao {
-    @Query("SELECT * FROM HabitCheck where habit_id = :habitId")
+    @Query(BY_HABIT_ID_QUERY)
     fun getFromList(habitId: Int): Flow<List<HabitCheck>>
 
-    // TODO check which one of these is used
-    @Query(BY_ID_QUERY)
-    fun getById(habitCheckId: Int): Flow<HabitCheck>
-
-    @Query(BY_ID_QUERY)
-    fun getByIdSync(habitCheckId: Int): HabitCheck
+    @Query(BY_HABIT_ID_QUERY)
+    fun getFromListSync(habitId: Int): List<HabitCheck>
 
     @Insert(entity = HabitCheck::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(habitCheck: HabitCheckInsert): Long
 
+    // TODO probably never need an update
     @Update(entity = HabitCheck::class)
     suspend fun update(habitCheck: HabitCheckUpdate)
 
-    @Delete
-    suspend fun delete(habitCheck: HabitCheck)
+    // TODO probably need a special delete query that checks the entire day range
+    @Query("DELETE FROM HabitCheck where habit_id = :habitId and check_time = :checkTime")
+    fun deleteForDay(
+        habitId: Int,
+        checkTime: Long,
+    )
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -95,29 +95,31 @@ class HabitCheckRepository(
 ) {
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    fun getFromList(habitCheckId: Int) = habitCheckDao.getFromList(habitCheckId)
+    fun getFromList(habitId: Int) = habitCheckDao.getFromList(habitId)
 
-    fun getById(habitCheckId: Int) = habitCheckDao.getById(habitCheckId)
-
-    fun getByIdSync(habitCheckId: Int) = habitCheckDao.getByIdSync(habitCheckId)
+    fun getFromListSync(habitId: Int) = habitCheckDao.getFromListSync(habitId)
 
     fun insert(habitCheck: HabitCheckInsert) = habitCheckDao.insert(habitCheck)
 
     @WorkerThread
     suspend fun update(habitCheck: HabitCheckUpdate) = habitCheckDao.update(habitCheck)
 
-    @WorkerThread
-    suspend fun delete(habitCheck: HabitCheck) = habitCheckDao.delete(habitCheck)
+    // TODO
+//    @WorkerThread
+//    suspend fun delete(habitCheck: HabitCheck) = habitCheckDao.delete(habitCheck)
+
+    fun deleteForDay(
+        habitId: Int,
+        checkTime: Long,
+    ) = habitCheckDao.deleteForDay(habitId, checkTime)
 }
 
 class HabitCheckViewModel(
     private val repository: HabitCheckRepository,
 ) : ViewModel() {
-    fun getFromList(habitCheckId: Int) = repository.getFromList(habitCheckId)
+    fun getFromList(habitId: Int) = repository.getFromList(habitId)
 
-    fun getById(habitCheckId: Int) = repository.getById(habitCheckId)
-
-    fun getByIdSync(habitCheckId: Int) = repository.getByIdSync(habitCheckId)
+    fun getFromListSync(habitId: Int) = repository.getFromListSync(habitId)
 
     fun insert(habitCheck: HabitCheckInsert) = repository.insert(habitCheck)
 
@@ -126,10 +128,15 @@ class HabitCheckViewModel(
             repository.update(habitCheck)
         }
 
-    fun delete(habitCheck: HabitCheck) =
-        viewModelScope.launch {
-            repository.delete(habitCheck)
-        }
+//    fun delete(habitCheck: HabitCheck) =
+//        viewModelScope.launch {
+//            repository.delete(habitCheck)
+//        }
+
+    fun deleteForDay(
+        habitId: Int,
+        checkTime: Long,
+    ) = repository.deleteForDay(habitId, checkTime)
 }
 
 class HabitCheckViewModelFactory(

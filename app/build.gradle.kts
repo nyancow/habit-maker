@@ -11,10 +11,10 @@ android {
 
     defaultConfig {
         applicationId = "com.dessalines.habitmaker"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 35
-        versionCode = 26
-        versionName = "0.6.3"
+        versionCode = 1
+        versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -85,6 +85,9 @@ android {
 
 dependencies {
 
+    // Compose-Calendar
+    implementation("com.kizitonwose.calendar:compose:2.6.1")
+
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
@@ -92,7 +95,7 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended-desktop:1.7.6")
+    implementation("androidx.compose.material:material-icons-extended:1.7.6")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.runtime:runtime-livedata:1.7.6")
