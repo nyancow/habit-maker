@@ -20,15 +20,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import com.dessalines.habitmaker.db.HabitCheck
 import com.dessalines.habitmaker.ui.components.common.MEDIUM_PADDING
+import com.dessalines.habitmaker.utils.epochMillisToLocalDate
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
-import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -37,7 +36,7 @@ fun HabitCalendar(
     habitChecks: List<HabitCheck>,
     onClickDay: (LocalDate) -> Unit,
 ) {
-    val checkDates = buildLocalDatesFromHabitChecks(habitChecks)
+    val checkDates = habitChecks.map { epochMillisToLocalDate(it.checkTime) }
 
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) }
@@ -146,8 +145,3 @@ fun Day(
         }
     }
 }
-
-fun buildLocalDatesFromHabitChecks(habitChecks: List<HabitCheck>) =
-    habitChecks.map {
-        Instant.ofEpochMilli(it.checkTime).atZone(ZoneId.systemDefault()).toLocalDate()
-    }

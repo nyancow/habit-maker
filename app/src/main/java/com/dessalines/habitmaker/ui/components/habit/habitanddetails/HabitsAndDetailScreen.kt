@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.habitmaker.db.EncouragementViewModel
@@ -27,11 +26,11 @@ import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitViewModel
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
 import com.dessalines.habitmaker.utils.checkHabitForDay
-import com.dessalines.habitmaker.utils.dateWithoutTime
+import com.dessalines.habitmaker.utils.localDateToEpochMillis
 import com.dessalines.habitmaker.utils.updateStatsForHabit
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Date
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(
@@ -48,7 +47,6 @@ fun HabitsAndDetailScreen(
     id: Int?,
 ) {
     val scope = rememberCoroutineScope()
-    val ctx = LocalContext.current
 
     var selectedHabitId: Int? by rememberSaveable { mutableStateOf(id) }
     val habits by habitViewModel.getAll.asLiveData().observeAsState()
@@ -90,7 +88,7 @@ fun HabitsAndDetailScreen(
                                 }
                             },
                             onHabitCheck = {
-                                val checkTime = dateWithoutTime(Date()).time
+                                val checkTime = localDateToEpochMillis(LocalDate.now())
                                 checkHabitForDay(it, checkTime, habitCheckViewModel)
                                 updateStatsForHabit(it, habitViewModel, habitCheckViewModel)
                             },

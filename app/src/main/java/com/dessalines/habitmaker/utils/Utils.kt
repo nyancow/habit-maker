@@ -1,5 +1,4 @@
 package com.dessalines.habitmaker.utils
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -11,8 +10,9 @@ import com.dessalines.habitmaker.db.HabitCheckInsert
 import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitUpdateStats
 import com.dessalines.habitmaker.db.HabitViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 const val TAG = "com.habitmaker"
 
@@ -21,9 +21,6 @@ const val MATRIX_CHAT_URL = "https://matrix.to/#/#habit-maker:matrix.org"
 const val DONATE_URL = "https://liberapay.com/dessalines"
 const val LEMMY_URL = "https://lemmy.ml/c/habitmaker"
 const val MASTODON_URL = "https://mastodon.social/@dessalines"
-
-@SuppressLint("SimpleDateFormat")
-val SDF = SimpleDateFormat("yyyy/MM/dd")
 
 fun openLink(
     url: String,
@@ -84,7 +81,9 @@ fun Int.toBool() = this == 1
 
 fun Boolean.toInt() = this.compareTo(false)
 
-fun dateWithoutTime(date: Date) = SDF.parse(SDF.format(date)) ?: Date()
+fun epochMillisToLocalDate(millis: Long) = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
+
+fun localDateToEpochMillis(date: LocalDate) = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 /**
  * Checks / toggles a habit for a given check time.
@@ -117,9 +116,8 @@ fun updateStatsForHabit(
 ) {
     // Read the history for that item
     val checks = habitCheckViewModel.getFromListSync(habitId)
-    val dateChecks = checks.map { dateWithoutTime(Date(it.checkTime)) }
-
-    val todayDate = dateWithoutTime(Date())
+    val dateChecks = checks.map { epochMillisToLocalDate(it.checkTime) }
+    val todayDate = LocalDate.now()
 
     val completed = dateChecks.lastOrNull() == todayDate
     Log.d(TAG, "completed = $completed")
