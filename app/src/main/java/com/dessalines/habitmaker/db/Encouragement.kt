@@ -1,13 +1,10 @@
 package com.dessalines.habitmaker.db
 
 import androidx.annotation.Keep
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.room.ColumnInfo
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -15,9 +12,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 @Entity(
     foreignKeys = [
@@ -64,28 +59,21 @@ data class EncouragementUpdate(
     val content: String,
 )
 
-private const val BY_ID_QUERY = "SELECT * FROM Encouragement where id = :encouragementId"
+private const val BY_HABIT_ID_QUERY = "SELECT * FROM Encouragement where habit_id = :habitId"
 
 @Dao
 interface EncouragementDao {
-    @Query("SELECT * FROM Encouragement where habit_id = :habitId")
-    fun getFromList(habitId: Int): Flow<List<Encouragement>>
+    @Query(BY_HABIT_ID_QUERY)
+    fun listForHabit(habitId: Int): Flow<List<Encouragement>>
 
-    // TODO check which one of these is used
-    @Query(BY_ID_QUERY)
-    fun getById(encouragementId: Int): Flow<Encouragement>
-
-    @Query(BY_ID_QUERY)
-    fun getByIdSync(encouragementId: Int): Encouragement
+    @Query(BY_HABIT_ID_QUERY)
+    fun listForHabitSync(habitId: Int): List<Encouragement>
 
     @Insert(entity = Encouragement::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(encouragement: EncouragementInsert): Long
 
-    @Update(entity = Encouragement::class)
-    suspend fun update(encouragement: EncouragementUpdate)
-
-    @Delete
-    suspend fun delete(encouragement: Encouragement)
+    @Query("DELETE FROM Encouragement where habit_id = :habitId")
+    fun deleteForHabit(habitId: Int)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -95,41 +83,25 @@ class EncouragementRepository(
 ) {
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    fun getFromList(encouragementId: Int) = encouragementDao.getFromList(encouragementId)
+    fun listForHabit(habitId: Int) = encouragementDao.listForHabit(habitId)
 
-    fun getById(encouragementId: Int) = encouragementDao.getById(encouragementId)
+    fun listForHabitSync(habitId: Int) = encouragementDao.listForHabitSync(habitId)
 
-    fun getByIdSync(encouragementId: Int) = encouragementDao.getByIdSync(encouragementId)
+    fun deleteForHabit(habitId: Int) = encouragementDao.deleteForHabit(habitId)
 
     fun insert(encouragement: EncouragementInsert) = encouragementDao.insert(encouragement)
-
-    @WorkerThread
-    suspend fun update(encouragement: EncouragementUpdate) = encouragementDao.update(encouragement)
-
-    @WorkerThread
-    suspend fun delete(encouragement: Encouragement) = encouragementDao.delete(encouragement)
 }
 
 class EncouragementViewModel(
     private val repository: EncouragementRepository,
 ) : ViewModel() {
-    fun getFromList(encouragementId: Int) = repository.getFromList(encouragementId)
+    fun listForHabit(habitId: Int) = repository.listForHabit(habitId)
 
-    fun getById(encouragementId: Int) = repository.getById(encouragementId)
+    fun listForHabitSync(habitId: Int) = repository.listForHabitSync(habitId)
 
-    fun getByIdSync(encouragementId: Int) = repository.getByIdSync(encouragementId)
+    fun deleteForHabit(habitId: Int) = repository.deleteForHabit(habitId)
 
     fun insert(encouragement: EncouragementInsert) = repository.insert(encouragement)
-
-    fun update(encouragement: EncouragementUpdate) =
-        viewModelScope.launch {
-            repository.update(encouragement)
-        }
-
-    fun delete(encouragement: Encouragement) =
-        viewModelScope.launch {
-            repository.delete(encouragement)
-        }
 }
 
 class EncouragementViewModelFactory(

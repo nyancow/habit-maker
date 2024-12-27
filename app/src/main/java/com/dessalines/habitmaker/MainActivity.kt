@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                             EditHabitScreen(
                                 navController = navController,
                                 habitViewModel = habitViewModel,
+                                encouragementViewModel = encouragementViewModel,
                                 id = id,
                             )
                         }

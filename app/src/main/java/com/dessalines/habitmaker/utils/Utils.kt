@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.db.HabitCheckInsert
 import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitUpdateStats
@@ -115,7 +116,7 @@ fun updateStatsForHabit(
     habitCheckViewModel: HabitCheckViewModel,
 ) {
     // Read the history for that item
-    val checks = habitCheckViewModel.getFromListSync(habitId)
+    val checks = habitCheckViewModel.listForHabitSync(habitId)
     val dateChecks = checks.map { epochMillisToLocalDate(it.checkTime) }
     val todayDate = LocalDate.now()
 
@@ -134,3 +135,10 @@ fun updateStatsForHabit(
         )
     habitViewModel.updateStats(statsUpdate)
 }
+
+fun habitFormValid(habit: Habit): Boolean =
+    nameIsValid(habit.name) &&
+        timesPerFrequencyIsValid(
+            habit.timesPerFrequency,
+            HabitFrequency.entries[habit.frequency],
+        )

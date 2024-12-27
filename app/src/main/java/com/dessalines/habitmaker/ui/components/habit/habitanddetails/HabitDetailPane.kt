@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -31,12 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dessalines.habitmaker.R
-import com.dessalines.habitmaker.db.Encouragement
 import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.db.HabitCheck
 import com.dessalines.habitmaker.db.sampleHabit
@@ -53,8 +50,6 @@ import java.time.LocalDate
 @Composable
 fun HabitDetailPane(
     habit: Habit,
-    // TODO maybe I don't need these, because the edit is on a different page?
-    encouragements: List<Encouragement>,
     habitChecks: List<HabitCheck>,
     isListAndDetailVisible: Boolean,
     onHabitCheck: (LocalDate) -> Unit,
@@ -62,9 +57,7 @@ fun HabitDetailPane(
     onBackClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
-    val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val showDeleteDialog = remember { mutableStateOf(false) }
@@ -116,7 +109,7 @@ fun HabitDetailPane(
                             text = { Text(stringResource(R.string.edit_habit)) },
                             onClick = {
                                 showMoreDropdown = false
-                                showDeleteDialog.value = true
+                                onEditClick()
                             },
                             leadingIcon = {
                                 Icon(

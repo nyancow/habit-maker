@@ -31,9 +31,7 @@ import com.dessalines.habitmaker.db.HabitInsert
 import com.dessalines.habitmaker.db.HabitViewModel
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
-import com.dessalines.habitmaker.utils.HabitFrequency
-import com.dessalines.habitmaker.utils.nameIsValid
-import com.dessalines.habitmaker.utils.timesPerFrequencyIsValid
+import com.dessalines.habitmaker.utils.habitFormValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -130,10 +128,3 @@ fun CreateHabitScreen(
         },
     )
 }
-
-fun habitFormValid(habit: Habit): Boolean =
-    nameIsValid(habit.name) &&
-        timesPerFrequencyIsValid(
-            habit.timesPerFrequency,
-            HabitFrequency.entries[habit.frequency],
-        )

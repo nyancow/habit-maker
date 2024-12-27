@@ -25,27 +25,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.dessalines.habitmaker.R
+import com.dessalines.habitmaker.db.EncouragementInsert
+import com.dessalines.habitmaker.db.EncouragementViewModel
 import com.dessalines.habitmaker.db.HabitUpdate
 import com.dessalines.habitmaker.db.HabitViewModel
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
-import com.dessalines.habitmaker.utils.nameIsValid
+import com.dessalines.habitmaker.utils.habitFormValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EditHabitScreen(
     navController: NavController,
     habitViewModel: HabitViewModel,
+    encouragementViewModel: EncouragementViewModel,
     id: Int,
 ) {
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
     val habit = habitViewModel.getByIdSync(id)
+    val encouragements = encouragementViewModel.listForHabitSync(id)
 
-    // Copy the habit from the DB first
+    // Copy the habit and encouragements from the DB first
     var editedHabit by remember {
         mutableStateOf(habit)
+    }
+
+    var editedEncouragements by remember {
+        mutableStateOf(encouragements)
     }
 
     Scaffold(
@@ -67,6 +75,10 @@ fun EditHabitScreen(
                     habit = editedHabit,
                     onChange = { editedHabit = it },
                 )
+                EncouragementsForm(
+                    initialEncouragements = editedEncouragements,
+                    onChange = { editedEncouragements = it },
+                )
             }
         },
         floatingActionButton = {
@@ -80,7 +92,7 @@ fun EditHabitScreen(
                 FloatingActionButton(
                     modifier = Modifier.imePadding(),
                     onClick = {
-                        if (nameIsValid(editedHabit.name)) {
+                        if (habitFormValid(editedHabit)) {
                             val update =
                                 HabitUpdate(
                                     id = editedHabit.id,
@@ -90,6 +102,19 @@ fun EditHabitScreen(
                                     notes = editedHabit.notes,
                                 )
                             habitViewModel.update(update)
+
+                            // Delete then add all the encouragements
+                            encouragementViewModel.deleteForHabit(editedHabit.id)
+
+                            // Now update the encouragements
+                            editedEncouragements.forEach {
+                                val insert =
+                                    EncouragementInsert(
+                                        habitId = editedHabit.id,
+                                        content = it.content,
+                                    )
+                                encouragementViewModel.insert(insert)
+                            }
                             navController.navigateUp()
                         }
                     },

@@ -4,7 +4,6 @@ import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
@@ -16,7 +15,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 @Entity(
     foreignKeys = [
@@ -68,10 +66,10 @@ private const val BY_HABIT_ID_QUERY = "SELECT * FROM HabitCheck where habit_id =
 @Dao
 interface HabitCheckDao {
     @Query(BY_HABIT_ID_QUERY)
-    fun getFromList(habitId: Int): Flow<List<HabitCheck>>
+    fun listForHabit(habitId: Int): Flow<List<HabitCheck>>
 
     @Query(BY_HABIT_ID_QUERY)
-    fun getFromListSync(habitId: Int): List<HabitCheck>
+    fun listForHabitSync(habitId: Int): List<HabitCheck>
 
     @Insert(entity = HabitCheck::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(habitCheck: HabitCheckInsert): Long
@@ -95,9 +93,9 @@ class HabitCheckRepository(
 ) {
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    fun getFromList(habitId: Int) = habitCheckDao.getFromList(habitId)
+    fun listForHabit(habitId: Int) = habitCheckDao.listForHabit(habitId)
 
-    fun getFromListSync(habitId: Int) = habitCheckDao.getFromListSync(habitId)
+    fun listForHabitSync(habitId: Int) = habitCheckDao.listForHabitSync(habitId)
 
     fun insert(habitCheck: HabitCheckInsert) = habitCheckDao.insert(habitCheck)
 
@@ -117,21 +115,11 @@ class HabitCheckRepository(
 class HabitCheckViewModel(
     private val repository: HabitCheckRepository,
 ) : ViewModel() {
-    fun getFromList(habitId: Int) = repository.getFromList(habitId)
+    fun listForHabit(habitId: Int) = repository.listForHabit(habitId)
 
-    fun getFromListSync(habitId: Int) = repository.getFromListSync(habitId)
+    fun listForHabitSync(habitId: Int) = repository.listForHabitSync(habitId)
 
     fun insert(habitCheck: HabitCheckInsert) = repository.insert(habitCheck)
-
-    fun update(habitCheck: HabitCheckUpdate) =
-        viewModelScope.launch {
-            repository.update(habitCheck)
-        }
-
-//    fun delete(habitCheck: HabitCheck) =
-//        viewModelScope.launch {
-//            repository.delete(habitCheck)
-//        }
 
     fun deleteForDay(
         habitId: Int,

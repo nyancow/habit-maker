@@ -111,19 +111,14 @@ fun HabitsAndDetailScreen(
                                 .getById(habitId)
                                 .asLiveData()
                                 .observeAsState()
-                            val encouragements by encouragementViewModel
-                                .getFromList(habitId)
-                                .asLiveData()
-                                .observeAsState()
                             val habitChecks by habitCheckViewModel
-                                .getFromList(habitId)
+                                .listForHabit(habitId)
                                 .asLiveData()
                                 .observeAsState()
 
                             habit?.let { habit ->
                                 HabitDetailPane(
                                     habit = habit,
-                                    encouragements = encouragements.orEmpty(),
                                     habitChecks = habitChecks.orEmpty(),
                                     isListAndDetailVisible = isListAndDetailVisible,
                                     onEditClick = {
