@@ -145,38 +145,16 @@ fun HabitsPane(
                         .padding(padding)
                         .imePadding(),
             ) {
-                habitFrequencySection(
-                    R.string.daily,
-                    habitsByFrequency.daily,
-                    settings,
-                    selectionState,
-                    onHabitClick,
-                    onHabitCheck,
-                )
-                habitFrequencySection(
-                    R.string.weekly,
-                    habitsByFrequency.weekly,
-                    settings,
-                    selectionState,
-                    onHabitClick,
-                    onHabitCheck,
-                )
-                habitFrequencySection(
-                    R.string.monthly,
-                    habitsByFrequency.monthly,
-                    settings,
-                    selectionState,
-                    onHabitClick,
-                    onHabitCheck,
-                )
-                habitFrequencySection(
-                    R.string.yearly,
-                    habitsByFrequency.yearly,
-                    settings,
-                    selectionState,
-                    onHabitClick,
-                    onHabitCheck,
-                )
+                habitsByFrequency.forEach {
+                    habitFrequencySection(
+                        it.titleResId,
+                        it.list,
+                        settings,
+                        selectionState,
+                        onHabitClick,
+                        onHabitCheck,
+                    )
+                }
                 item {
                     if (habits.isNullOrEmpty()) {
                         Text(
@@ -315,11 +293,9 @@ fun HabitRowPreview() {
     )
 }
 
-data class HabitsByFrequency(
-    val daily: List<Habit>,
-    val weekly: List<Habit>,
-    val monthly: List<Habit>,
-    val yearly: List<Habit>,
+data class HabitListAndTitle(
+    @StringRes val titleResId: Int,
+    val list: List<Habit>,
 )
 
 fun filterAndSortHabits(
@@ -356,10 +332,23 @@ fun filterAndSortHabits(
     return tmp.toImmutableList()
 }
 
+@Composable
 fun buildHabitsByFrequency(habits: List<Habit>) =
-    HabitsByFrequency(
-        daily = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Daily },
-        weekly = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Weekly },
-        monthly = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Monthly },
-        yearly = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Yearly },
+    listOf(
+        HabitListAndTitle(
+            titleResId = R.string.daily,
+            list = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Daily },
+        ),
+        HabitListAndTitle(
+            titleResId = R.string.weekly,
+            list = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Weekly },
+        ),
+        HabitListAndTitle(
+            titleResId = R.string.monthly,
+            list = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Monthly },
+        ),
+        HabitListAndTitle(
+            titleResId = R.string.yearly,
+            list = habits.filter { HabitFrequency.entries[it.frequency] == HabitFrequency.Yearly },
+        ),
     )
