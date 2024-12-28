@@ -18,12 +18,14 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.dessalines.habitmaker.R
 import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.utils.HabitFrequency
+import com.dessalines.habitmaker.utils.HabitStatus
 
 @Composable
 fun SectionTitle(title: String) =
@@ -45,11 +47,22 @@ fun textFieldBorder() =
 fun HabitInfoChip(
     text: String,
     icon: ImageVector,
+    habitStatus: HabitStatus = HabitStatus.Normal,
 ) {
     val ctx = LocalContext.current
 
+//    containerColor = Color.Transparent,
+//    labelColor = fromToken(AssistChipTokens.LabelTextColor),
+    val (containerColor, labelColor) =
+        when (habitStatus) {
+            HabitStatus.Normal -> Pair(Color.Transparent, AssistChipDefaults.assistChipColors().labelColor)
+            HabitStatus.Silver -> Pair(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
+            HabitStatus.Gold -> Pair(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer)
+            HabitStatus.Platinum -> Pair(MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
+        }
+
     AssistChip(
-//        colors = AssistChipDefaults.assistChipColors().copy(containerColor = Color.Yellow),
+        colors = AssistChipDefaults.assistChipColors().copy(containerColor = containerColor, labelColor = labelColor),
 //        onClick = { openLink(USER_GUIDE_URL, ctx) },
         onClick = {},
         label = { Text(text) },
@@ -74,6 +87,8 @@ fun HabitChipsFlowRow(
         modifier = modifier,
     ) {
         val freq = HabitFrequency.entries[habit.frequency]
+        // Streak has special colors
+        val habitStatus = habitStatusFromStreak(habit.streak)
         HabitInfoChip(
             text =
                 stringResource(
@@ -85,6 +100,7 @@ fun HabitChipsFlowRow(
                     },
                     habit.streak.toString(),
                 ),
+            habitStatus = habitStatus,
             icon = Icons.AutoMirrored.Default.ShowChart,
         )
         HabitInfoChip(
@@ -105,3 +121,12 @@ fun HabitChipsFlowRow(
         )
     }
 }
+
+fun habitStatusFromStreak(streak: Int) =
+    when (streak) {
+        in 0..3 -> HabitStatus.Normal
+        in 4..7 -> HabitStatus.Silver
+        in 8..21 -> HabitStatus.Gold
+        in 22..500 -> HabitStatus.Platinum
+        else -> HabitStatus.Normal
+    }

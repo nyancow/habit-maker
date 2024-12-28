@@ -49,3 +49,13 @@ enum class HabitSortOrder(
     Ascending(R.string.ascending),
     Descending(R.string.descending),
 }
+
+/**
+ * A habit status used for coloring the streak chips
+ */
+enum class HabitStatus {
+    Normal,
+    Silver,
+    Gold,
+    Platinum,
+}
