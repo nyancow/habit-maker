@@ -47,8 +47,8 @@ import com.dessalines.habitmaker.ui.components.common.AreYouSureDialog
 import com.dessalines.habitmaker.ui.components.common.HabitChipsFlowRow
 import com.dessalines.habitmaker.ui.components.common.HabitInfoChip
 import com.dessalines.habitmaker.ui.components.common.LARGE_PADDING
-import com.dessalines.habitmaker.ui.components.common.MEDIUM_PADDING
 import com.dessalines.habitmaker.ui.components.common.SMALL_PADDING
+import com.dessalines.habitmaker.ui.components.common.SectionDivider
 import com.dessalines.habitmaker.ui.components.common.SectionTitle
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
@@ -177,6 +177,7 @@ fun HabitDetailPane(
                 item {
                     HabitChipsFlowRow(
                         habit = habit,
+                        settings = null,
                         modifier = Modifier.padding(horizontal = LARGE_PADDING),
                     )
                 }
@@ -209,9 +210,6 @@ fun HabitDetailPane(
         },
     )
 }
-
-@Composable
-fun SectionDivider() = HorizontalDivider(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
 
 @Composable
 fun HabitDetails(habit: Habit) {

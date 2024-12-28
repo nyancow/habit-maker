@@ -31,23 +31,23 @@ enum class HabitFrequency(
 enum class HabitSort(
     @StringRes val resId: Int,
 ) {
-    Name(R.string.name),
+    Streak(R.string.streak),
     Points(R.string.points),
     Score(R.string.score),
-    Streak(R.string.streak),
 
     /**
      * Whether its completed or not.
      */
     Status(R.string.status),
     DateCreated(R.string.date_created),
+    Name(R.string.name),
 }
 
 enum class HabitSortOrder(
     @StringRes val resId: Int,
 ) {
-    Ascending(R.string.ascending),
     Descending(R.string.descending),
+    Ascending(R.string.ascending),
 }
 
 /**

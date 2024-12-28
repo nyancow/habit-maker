@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -20,12 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.dessalines.habitmaker.R
+import com.dessalines.habitmaker.db.AppSettings
 import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.utils.HabitFrequency
 import com.dessalines.habitmaker.utils.HabitStatus
+import com.dessalines.habitmaker.utils.toBool
 
 @Composable
 fun SectionTitle(title: String) =
@@ -34,6 +36,9 @@ fun SectionTitle(title: String) =
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
         style = MaterialTheme.typography.titleLarge,
     )
+
+@Composable
+fun SectionDivider() = HorizontalDivider(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
 
 @Composable
 fun textFieldBorder() =
@@ -49,10 +54,6 @@ fun HabitInfoChip(
     icon: ImageVector,
     habitStatus: HabitStatus = HabitStatus.Normal,
 ) {
-    val ctx = LocalContext.current
-
-//    containerColor = Color.Transparent,
-//    labelColor = fromToken(AssistChipTokens.LabelTextColor),
     val (containerColor, labelColor) =
         when (habitStatus) {
             HabitStatus.Normal -> Pair(Color.Transparent, AssistChipDefaults.assistChipColors().labelColor)
@@ -80,45 +81,52 @@ fun HabitInfoChip(
 @OptIn(ExperimentalLayoutApi::class)
 fun HabitChipsFlowRow(
     habit: Habit,
+    settings: AppSettings?,
     modifier: Modifier = Modifier,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = modifier,
     ) {
-        val freq = HabitFrequency.entries[habit.frequency]
-        // Streak has special colors
-        val habitStatus = habitStatusFromStreak(habit.streak)
-        HabitInfoChip(
-            text =
-                stringResource(
-                    when (freq) {
-                        HabitFrequency.Daily -> R.string.x_day_streak
-                        HabitFrequency.Weekly -> R.string.x_week_streak
-                        HabitFrequency.Monthly -> R.string.x_month_streak
-                        HabitFrequency.Yearly -> R.string.x_year_streak
-                    },
-                    habit.streak.toString(),
-                ),
-            habitStatus = habitStatus,
-            icon = Icons.AutoMirrored.Default.ShowChart,
-        )
-        HabitInfoChip(
-            text =
-                stringResource(
-                    R.string.x_points,
-                    habit.points.toString(),
-                ),
-            icon = Icons.Outlined.FavoriteBorder,
-        )
-        HabitInfoChip(
-            text =
-                stringResource(
-                    R.string.x_percent_complete,
-                    habit.score.toString(),
-                ),
-            icon = Icons.Default.Check,
-        )
+        if (!(settings?.hideStreakOnHome ?: 0).toBool()) {
+            val freq = HabitFrequency.entries[habit.frequency]
+            // Streak has special colors
+            val habitStatus = habitStatusFromStreak(habit.streak)
+            HabitInfoChip(
+                text =
+                    stringResource(
+                        when (freq) {
+                            HabitFrequency.Daily -> R.string.x_day_streak
+                            HabitFrequency.Weekly -> R.string.x_week_streak
+                            HabitFrequency.Monthly -> R.string.x_month_streak
+                            HabitFrequency.Yearly -> R.string.x_year_streak
+                        },
+                        habit.streak.toString(),
+                    ),
+                habitStatus = habitStatus,
+                icon = Icons.AutoMirrored.Default.ShowChart,
+            )
+        }
+        if (!(settings?.hidePointsOnHome ?: 0).toBool()) {
+            HabitInfoChip(
+                text =
+                    stringResource(
+                        R.string.x_points,
+                        habit.points.toString(),
+                    ),
+                icon = Icons.Outlined.FavoriteBorder,
+            )
+        }
+        if (!(settings?.hideScoreOnHome ?: 0).toBool()) {
+            HabitInfoChip(
+                text =
+                    stringResource(
+                        R.string.x_percent_complete,
+                        habit.score.toString(),
+                    ),
+                icon = Icons.Default.Check,
+            )
+        }
     }
 }
 

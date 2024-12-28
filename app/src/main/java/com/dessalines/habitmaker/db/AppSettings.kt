@@ -82,7 +82,6 @@ data class AppSettings(
         defaultValue = "0",
     )
     val hideStreakOnHome: Int,
-    // TODO add hide monthly, yearly
 )
 
 data class SettingsUpdate(

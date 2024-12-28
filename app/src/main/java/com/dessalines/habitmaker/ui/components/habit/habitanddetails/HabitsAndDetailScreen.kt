@@ -108,6 +108,7 @@ fun HabitsAndDetailScreen(
                     AnimatedPane {
                         HabitsPane(
                             habits = habits,
+                            settings = settings,
                             snackbarHostState = snackbarHostState,
                             onHabitClick = { habitId ->
                                 selectedHabitId = habitId

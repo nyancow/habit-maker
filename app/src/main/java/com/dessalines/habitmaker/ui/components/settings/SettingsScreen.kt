@@ -1,6 +1,5 @@
 package com.dessalines.habitmaker.ui.components.settings
 
-import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -96,10 +95,8 @@ fun SettingsScreen(
             ActivityResultContracts.CreateDocument("application/zip"),
         ) {
             it?.also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    dbHelper.export(ctx, it)
-                    Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
-                }
+                dbHelper.export(ctx, it)
+                Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -108,10 +105,8 @@ fun SettingsScreen(
             ActivityResultContracts.OpenDocument(),
         ) {
             it?.also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    dbHelper.import(ctx, it, true)
-                    Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
-                }
+                dbHelper.import(ctx, it, true)
+                Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -320,6 +315,23 @@ fun SettingsScreen(
                     )
 
                     SwitchPreference(
+                        value = hideStreakOnHomeState,
+                        onValueChange = {
+                            hideStreakOnHomeState = it
+                            updateSettings()
+                        },
+                        title = {
+                            Text(stringResource(R.string.hide_streak_on_home))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.RemoveRedEye,
+                                contentDescription = null,
+                            )
+                        },
+                    )
+
+                    SwitchPreference(
                         value = hidePointsOnHomeState,
                         onValueChange = {
                             hidePointsOnHomeState = it
@@ -344,23 +356,6 @@ fun SettingsScreen(
                         },
                         title = {
                             Text(stringResource(R.string.hide_score_on_home))
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
-                                contentDescription = null,
-                            )
-                        },
-                    )
-
-                    SwitchPreference(
-                        value = hideStreakOnHomeState,
-                        onValueChange = {
-                            hideStreakOnHomeState = it
-                            updateSettings()
-                        },
-                        title = {
-                            Text(stringResource(R.string.hide_streak_on_home))
                         },
                         icon = {
                             Icon(
