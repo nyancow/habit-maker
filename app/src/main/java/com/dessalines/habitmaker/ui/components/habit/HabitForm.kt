@@ -25,8 +25,6 @@ import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.ui.components.common.SMALL_PADDING
 import com.dessalines.habitmaker.ui.components.common.textFieldBorder
 import com.dessalines.habitmaker.utils.HabitFrequency
-import com.dessalines.habitmaker.utils.nameIsValid
-import com.dessalines.habitmaker.utils.timesPerFrequencyIsValid
 import me.zhanghai.compose.preference.ListPreference
 import me.zhanghai.compose.preference.ListPreferenceType
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
@@ -80,7 +78,7 @@ fun HabitForm(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 value = name,
-                isError = !nameIsValid(name),
+                isError = !requiredFieldIsValid(name),
                 onValueChange = {
                     name = it
                     habitChange()
@@ -146,8 +144,21 @@ fun HabitFormPreview() {
     HabitForm(onChange = {})
 }
 
+fun requiredFieldIsValid(name: String): Boolean = name.isNotEmpty()
+
+fun timesPerFrequencyIsValid(
+    timesPerFrequency: Int,
+    frequency: HabitFrequency,
+): Boolean =
+    when (frequency) {
+        HabitFrequency.Daily -> IntRange(1, 1)
+        HabitFrequency.Weekly -> IntRange(1, 7)
+        HabitFrequency.Monthly -> IntRange(1, 28)
+        HabitFrequency.Yearly -> IntRange(1, 365)
+    }.contains(timesPerFrequency)
+
 fun habitFormValid(habit: Habit): Boolean =
-    nameIsValid(habit.name) &&
+    requiredFieldIsValid(habit.name) &&
         timesPerFrequencyIsValid(
             habit.timesPerFrequency,
             HabitFrequency.entries[habit.frequency],

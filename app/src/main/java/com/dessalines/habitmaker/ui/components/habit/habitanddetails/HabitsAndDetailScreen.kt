@@ -23,13 +23,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
+import com.dessalines.habitmaker.db.AppSettings
 import com.dessalines.habitmaker.db.EncouragementViewModel
+import com.dessalines.habitmaker.db.HabitCheckInsert
 import com.dessalines.habitmaker.db.HabitCheckViewModel
+import com.dessalines.habitmaker.db.HabitUpdateStats
 import com.dessalines.habitmaker.db.HabitViewModel
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
-import com.dessalines.habitmaker.utils.checkHabitForDay
-import com.dessalines.habitmaker.utils.localDateToEpochMillis
-import com.dessalines.habitmaker.utils.updateStatsForHabit
+import com.dessalines.habitmaker.utils.calculatePoints
+import com.dessalines.habitmaker.utils.calculateScore
+import com.dessalines.habitmaker.utils.calculateStreaks
+import com.dessalines.habitmaker.utils.currentStreak
+import com.dessalines.habitmaker.utils.epochMillisToLocalDate
+import com.dessalines.habitmaker.utils.toEpochMillis
+import com.dessalines.habitmaker.utils.toInt
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
@@ -43,6 +50,7 @@ import java.time.ZoneId
 @Composable
 fun HabitsAndDetailScreen(
     navController: NavController,
+    settings: AppSettings?,
     habitViewModel: HabitViewModel,
     encouragementViewModel: EncouragementViewModel,
     habitCheckViewModel: HabitCheckViewModel,
@@ -50,6 +58,9 @@ fun HabitsAndDetailScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val completedCount = settings?.completedCount ?: 0
+
     var selectedHabitId: Int? by rememberSaveable { mutableStateOf(id) }
     val habits by habitViewModel.getAll.asLiveData().observeAsState()
 
@@ -91,9 +102,9 @@ fun HabitsAndDetailScreen(
                                 }
                             },
                             onHabitCheck = { habitId ->
-                                val checkTime = localDateToEpochMillis(LocalDate.now())
+                                val checkTime = LocalDate.now().toEpochMillis()
                                 val success = checkHabitForDay(habitId, checkTime, habitCheckViewModel)
-                                updateStatsForHabit(habitId, habitViewModel, habitCheckViewModel)
+                                updateStatsForHabit(habitId, habitViewModel, habitCheckViewModel, completedCount)
 
                                 // If successful, show a random encouragement
                                 if (success) {
@@ -151,7 +162,7 @@ fun HabitsAndDetailScreen(
                                     onHabitCheck = {
                                         val checkTime = it.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                                         checkHabitForDay(habit.id, checkTime, habitCheckViewModel)
-                                        updateStatsForHabit(habit.id, habitViewModel, habitCheckViewModel)
+                                        updateStatsForHabit(habit.id, habitViewModel, habitCheckViewModel, completedCount)
                                     },
                                 )
                             }
@@ -161,4 +172,62 @@ fun HabitsAndDetailScreen(
             )
         }
     }
+}
+
+/**
+ * Checks / toggles a habit for a given check time.
+ *
+ * If it already exists, it deletes the row in order to toggle it.
+ *
+ * returns true if successful / check, false for deleted check.
+ */
+fun checkHabitForDay(
+    habitId: Int,
+    checkTime: Long,
+    habitCheckViewModel: HabitCheckViewModel,
+): Boolean {
+    val insert =
+        HabitCheckInsert(
+            habitId = habitId,
+            checkTime = checkTime,
+        )
+    val success = habitCheckViewModel.insert(insert)
+
+    // If its -1, that means that its already been checked for today,
+    // and you actually need to delete it to toggle
+    if (success == -1L) {
+        habitCheckViewModel.deleteForDay(habitId, checkTime)
+        return false
+    } else {
+        return true
+    }
+}
+
+fun updateStatsForHabit(
+    habitId: Int,
+    habitViewModel: HabitViewModel,
+    habitCheckViewModel: HabitCheckViewModel,
+    completedCount: Int,
+) {
+    // Read the history for that item
+    val checks = habitCheckViewModel.listForHabitSync(habitId)
+    val dateChecks = checks.map { it.checkTime.epochMillisToLocalDate() }
+    val todayDate = LocalDate.now()
+
+    val completed = dateChecks.lastOrNull() == todayDate
+
+    val streaks = calculateStreaks(checks)
+    val currentStreak = currentStreak(streaks, todayDate)
+    val points = calculatePoints(streaks)
+    val score = calculateScore(checks, completedCount)
+
+    val statsUpdate =
+        HabitUpdateStats(
+            id = habitId,
+            points = points.toInt(),
+            score = score,
+            streak = currentStreak.toInt(),
+            completed = completed.toInt(),
+        )
+    habitViewModel.updateStats(statsUpdate)
 }

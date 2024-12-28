@@ -38,7 +38,7 @@ fun HabitCalendar(
     habitChecks: List<HabitCheck>,
     onClickDay: (LocalDate) -> Unit,
 ) {
-    val checkDates = habitChecks.map { epochMillisToLocalDate(it.checkTime) }
+    val checkDates = habitChecks.map { it.checkTime.epochMillisToLocalDate() }
 
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) }
