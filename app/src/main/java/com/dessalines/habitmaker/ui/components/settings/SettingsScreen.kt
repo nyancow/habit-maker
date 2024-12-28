@@ -170,7 +170,11 @@ fun SettingsScreen(
                         onSliderValueChange = { completedCountSliderState = it },
                         valueRange = MIN_COMPLETED_COUNT.toFloat()..MAX_COMPLETED_COUNT.toFloat(),
                         title = {
-                            val completedCountStr = stringResource(R.string.completed_count, completedCountSliderState.toInt().toString())
+                            val completedCountStr =
+                                stringResource(
+                                    R.string.completed_count,
+                                    completedCountSliderState.toInt().toString(),
+                                )
                             Text(completedCountStr)
                         },
                         summary = {
