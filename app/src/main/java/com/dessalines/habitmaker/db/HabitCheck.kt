@@ -140,7 +140,7 @@ class HabitCheckViewModelFactory(
 }
 
 val sampleHabitChecks =
-    arrayOf(
+    listOf(
         HabitCheck(
             id = 1,
             habitId = 1,

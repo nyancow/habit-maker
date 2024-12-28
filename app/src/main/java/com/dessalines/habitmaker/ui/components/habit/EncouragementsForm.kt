@@ -70,7 +70,7 @@ fun EncouragementsForm(
 @Preview
 fun EncouragementsFormPreview() {
     EncouragementsForm(
-        initialEncouragements = sampleEncouragements.toList(),
+        initialEncouragements = sampleEncouragements,
         onChange = {},
     )
 }

@@ -24,6 +24,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBarDefaults
@@ -47,6 +49,7 @@ import kotlin.collections.orEmpty
 @Composable
 fun HabitsPane(
     habits: List<Habit>?,
+    snackbarHostState: SnackbarHostState,
     onHabitClick: (habitId: Int) -> Unit,
     onHabitCheck: (habitId: Int) -> Unit,
     onCreateHabitClick: () -> Unit,
@@ -85,6 +88,9 @@ fun HabitsPane(
                 },
             )
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
             Box(
@@ -106,7 +112,9 @@ fun HabitsPane(
                         HabitRow(
                             habit = habit,
                             onClick = { onHabitClick(habit.id) },
-                            onCheck = { onHabitCheck(habit.id) },
+                            onCheck = {
+                                onHabitCheck(habit.id)
+                            },
                             selected = selected,
                         )
                     }

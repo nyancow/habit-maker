@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -47,7 +49,7 @@ fun HabitsAndDetailScreen(
     id: Int?,
 ) {
     val scope = rememberCoroutineScope()
-
+    val snackbarHostState = remember { SnackbarHostState() }
     var selectedHabitId: Int? by rememberSaveable { mutableStateOf(id) }
     val habits by habitViewModel.getAll.asLiveData().observeAsState()
 
@@ -81,16 +83,26 @@ fun HabitsAndDetailScreen(
                     AnimatedPane {
                         HabitsPane(
                             habits = habits,
+                            snackbarHostState = snackbarHostState,
                             onHabitClick = { habitId ->
                                 selectedHabitId = habitId
                                 scope.launch {
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                 }
                             },
-                            onHabitCheck = {
+                            onHabitCheck = { habitId ->
                                 val checkTime = localDateToEpochMillis(LocalDate.now())
-                                checkHabitForDay(it, checkTime, habitCheckViewModel)
-                                updateStatsForHabit(it, habitViewModel, habitCheckViewModel)
+                                val success = checkHabitForDay(habitId, checkTime, habitCheckViewModel)
+                                updateStatsForHabit(habitId, habitViewModel, habitCheckViewModel)
+
+                                // If successful, show a random encouragement
+                                if (success) {
+                                    encouragementViewModel.getRandomForHabit(habitId)?.let { encouragement ->
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(encouragement.content)
+                                        }
+                                    }
+                                }
                             },
                             selectionState = selectionState,
                             isListAndDetailVisible = isListAndDetailVisible,

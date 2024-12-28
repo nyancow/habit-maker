@@ -182,7 +182,6 @@ class HabitRepository(
 
     fun getById(id: Int) = habitDao.getById(id)
 
-    // TODO do I need this?
     fun getByIdSync(id: Int) = habitDao.getByIdSync(id)
 
     fun insert(habit: HabitInsert) = habitDao.insert(habit)

@@ -18,7 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import com.dessalines.habitmaker.db.HabitCheck
+import com.dessalines.habitmaker.db.sampleHabitChecks
 import com.dessalines.habitmaker.ui.components.common.MEDIUM_PADDING
 import com.dessalines.habitmaker.utils.epochMillisToLocalDate
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -144,4 +146,13 @@ fun Day(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun HabitCalendarPreview() {
+    HabitCalendar(
+        habitChecks = sampleHabitChecks,
+        onClickDay = {},
+    )
 }

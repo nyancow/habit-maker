@@ -31,7 +31,6 @@ import com.dessalines.habitmaker.db.HabitInsert
 import com.dessalines.habitmaker.db.HabitViewModel
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
-import com.dessalines.habitmaker.utils.habitFormValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable

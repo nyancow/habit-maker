@@ -5,8 +5,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
-import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.db.HabitCheckInsert
 import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitUpdateStats
@@ -90,12 +88,14 @@ fun localDateToEpochMillis(date: LocalDate) = date.atStartOfDay(ZoneId.systemDef
  * Checks / toggles a habit for a given check time.
  *
  * If it already exists, it deletes the row in order to toggle it.
+ *
+ * returns true if successful / check, false for deleted check.
  */
 fun checkHabitForDay(
     habitId: Int,
     checkTime: Long,
     habitCheckViewModel: HabitCheckViewModel,
-) {
+): Boolean {
     val insert =
         HabitCheckInsert(
             habitId = habitId,
@@ -107,6 +107,9 @@ fun checkHabitForDay(
     // and you actually need to delete it to toggle
     if (success == -1L) {
         habitCheckViewModel.deleteForDay(habitId, checkTime)
+        return false
+    } else {
+        return true
     }
 }
 
@@ -121,9 +124,6 @@ fun updateStatsForHabit(
     val todayDate = LocalDate.now()
 
     val completed = dateChecks.lastOrNull() == todayDate
-    Log.d(TAG, "completed = $completed")
-    Log.d(TAG, "datechecklast = ${dateChecks.lastOrNull()}")
-    Log.d(TAG, "todayDate = $todayDate")
 
     val statsUpdate =
         HabitUpdateStats(
@@ -135,10 +135,3 @@ fun updateStatsForHabit(
         )
     habitViewModel.updateStats(statsUpdate)
 }
-
-fun habitFormValid(habit: Habit): Boolean =
-    nameIsValid(habit.name) &&
-        timesPerFrequencyIsValid(
-            habit.timesPerFrequency,
-            HabitFrequency.entries[habit.frequency],
-        )

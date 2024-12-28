@@ -145,3 +145,10 @@ fun HabitForm(
 fun HabitFormPreview() {
     HabitForm(onChange = {})
 }
+
+fun habitFormValid(habit: Habit): Boolean =
+    nameIsValid(habit.name) &&
+        timesPerFrequencyIsValid(
+            habit.timesPerFrequency,
+            HabitFrequency.entries[habit.frequency],
+        )

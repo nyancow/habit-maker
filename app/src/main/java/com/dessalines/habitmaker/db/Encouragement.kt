@@ -69,6 +69,9 @@ interface EncouragementDao {
     @Query(BY_HABIT_ID_QUERY)
     fun listForHabitSync(habitId: Int): List<Encouragement>
 
+    @Query("SELECT * FROM Encouragement where habit_id = :habitId ORDER BY RANDOM() LIMIT 1")
+    fun getRandomForHabit(habitId: Int): Encouragement?
+
     @Insert(entity = Encouragement::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(encouragement: EncouragementInsert): Long
 
@@ -87,6 +90,8 @@ class EncouragementRepository(
 
     fun listForHabitSync(habitId: Int) = encouragementDao.listForHabitSync(habitId)
 
+    fun getRandomForHabit(habitId: Int) = encouragementDao.getRandomForHabit(habitId)
+
     fun deleteForHabit(habitId: Int) = encouragementDao.deleteForHabit(habitId)
 
     fun insert(encouragement: EncouragementInsert) = encouragementDao.insert(encouragement)
@@ -98,6 +103,8 @@ class EncouragementViewModel(
     fun listForHabit(habitId: Int) = repository.listForHabit(habitId)
 
     fun listForHabitSync(habitId: Int) = repository.listForHabitSync(habitId)
+
+    fun getRandomForHabit(habitId: Int) = repository.getRandomForHabit(habitId)
 
     fun deleteForHabit(habitId: Int) = repository.deleteForHabit(habitId)
 
@@ -117,7 +124,7 @@ class EncouragementViewModelFactory(
 }
 
 val sampleEncouragements =
-    arrayOf(
+    listOf(
         Encouragement(
             id = 1,
             habitId = 1,
