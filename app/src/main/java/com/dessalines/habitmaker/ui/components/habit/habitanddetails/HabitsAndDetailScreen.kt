@@ -13,6 +13,7 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,6 +68,8 @@ fun HabitsAndDetailScreen(
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val paneExpansionState = rememberPaneExpansionState()
+    paneExpansionState.setFirstPaneProportion(0.4f)
 
     val completedCount = settings?.completedCount ?: 0
     val defaultEncouragements = buildDefaultEncouragements()
@@ -92,6 +95,7 @@ fun HabitsAndDetailScreen(
             ListDetailPaneScaffold(
                 directive = navigator.scaffoldDirective,
                 value = navigator.scaffoldValue,
+                paneExpansionState = paneExpansionState,
                 listPane = {
                     val currentSelectedHabitId = selectedHabitId
                     val selectionState =

@@ -3,28 +3,19 @@ package com.dessalines.habitmaker.ui.components.habit.habitanddetails
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ShowChart
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -42,18 +33,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.dessalines.habitmaker.R
 import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.db.sampleHabit
+import com.dessalines.habitmaker.ui.components.common.HabitChipsFlowRow
 import com.dessalines.habitmaker.ui.components.common.LARGE_PADDING
-import com.dessalines.habitmaker.ui.components.common.SMALL_PADDING
+import com.dessalines.habitmaker.ui.components.common.SectionTitle
 import com.dessalines.habitmaker.ui.components.common.SimpleTopAppBar
 import com.dessalines.habitmaker.ui.components.common.ToolTip
-import com.dessalines.habitmaker.utils.HabitFrequency
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
 import com.dessalines.habitmaker.utils.toBool
 import kotlin.collections.orEmpty
@@ -106,46 +96,39 @@ fun HabitsPane(
         },
         modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
-            Box(
+            LazyColumn(
+                state = listState,
                 modifier =
-                    Modifier.Companion
+                    Modifier
                         .padding(padding)
                         .imePadding(),
             ) {
-                LazyColumn(
-                    state = listState,
-                ) {
-                    item {
+                item {
+                    SectionTitle(stringResource(R.string.today))
+                }
+                items(habits.orEmpty()) { habit ->
+                    val selected =
+                        when (selectionState) {
+                            is SelectionVisibilityState.ShowSelection -> selectionState.selectedItem == habit.id
+                            else -> false
+                        }
+
+                    HabitRow(
+                        habit = habit,
+                        onClick = { onHabitClick(habit.id) },
+                        onCheck = {
+                            onHabitCheck(habit.id)
+                        },
+                        selected = selected,
+                    )
+                    HorizontalDivider()
+                }
+                item {
+                    if (habits.isNullOrEmpty()) {
                         Text(
-                            text = stringResource(R.string.today),
-                            style = MaterialTheme.typography.titleLarge,
+                            text = stringResource(R.string.no_habits),
                             modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
                         )
-                    }
-                    items(habits.orEmpty()) { habit ->
-                        val selected =
-                            when (selectionState) {
-                                is SelectionVisibilityState.ShowSelection -> selectionState.selectedItem == habit.id
-                                else -> false
-                            }
-
-                        HabitRow(
-                            habit = habit,
-                            onClick = { onHabitClick(habit.id) },
-                            onCheck = {
-                                onHabitCheck(habit.id)
-                            },
-                            selected = selected,
-                        )
-                        HorizontalDivider()
-                    }
-                    item {
-                        if (habits.isNullOrEmpty()) {
-                            Text(
-                                text = stringResource(R.string.no_habits),
-                                modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
-                            )
-                        }
                     }
                 }
             }
@@ -196,40 +179,7 @@ fun HabitRow(
             Text(habit.name)
         },
         supportingContent = {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-            ) {
-                val freq = HabitFrequency.entries[habit.frequency]
-                HabitInfoChip(
-                    text =
-                        stringResource(
-                            when (freq) {
-                                HabitFrequency.Daily -> R.string.x_day_streak
-                                HabitFrequency.Weekly -> R.string.x_week_streak
-                                HabitFrequency.Monthly -> R.string.x_month_streak
-                                HabitFrequency.Yearly -> R.string.x_year_streak
-                            },
-                            habit.streak.toString(),
-                        ),
-                    icon = Icons.AutoMirrored.Default.ShowChart,
-                )
-                HabitInfoChip(
-                    text =
-                        stringResource(
-                            R.string.x_points,
-                            habit.points.toString(),
-                        ),
-                    icon = Icons.Outlined.FavoriteBorder,
-                )
-                HabitInfoChip(
-                    text =
-                        stringResource(
-                            R.string.x_percent_complete,
-                            habit.score.toString(),
-                        ),
-                    icon = Icons.Default.Check,
-                )
-            }
+            HabitChipsFlowRow(habit)
         },
         colors = ListItemDefaults.colors(containerColor = containerColor),
         modifier =
@@ -257,25 +207,5 @@ fun HabitRowPreview() {
         habit = sampleHabit,
         onCheck = {},
         onClick = {},
-    )
-}
-
-@Composable
-fun HabitInfoChip(
-    text: String,
-    icon: ImageVector,
-) {
-    AssistChip(
-        // TODO clicking on these should go to a website description
-//        colors = AssistChipDefaults.assistChipColors().copy(containerColor = Color.Yellow),
-        onClick = {},
-        label = { Text(text) },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                modifier = Modifier.size(AssistChipDefaults.IconSize),
-                contentDescription = null,
-            )
-        },
     )
 }

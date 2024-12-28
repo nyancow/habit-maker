@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,12 +77,18 @@ fun HabitForm(
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         ProvidePreferenceTheme {
+            val nameError = !requiredFieldIsValid(name)
             OutlinedTextField(
                 label = { Text(stringResource(R.string.title)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 value = name,
-                isError = !requiredFieldIsValid(name),
+                isError = nameError,
+                trailingIcon = {
+                    if (nameError) {
+                        ErrorIcon()
+                    }
+                },
                 onValueChange = {
                     name = it
                     habitChange()
@@ -111,22 +121,36 @@ fun HabitForm(
             AnimatedVisibility(
                 frequency != HabitFrequency.Daily,
             ) {
+                val timesPerFreqError = !timesPerFrequencyIsValid(timesPerFrequency, frequency)
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.how_many_times)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     value = timesPerFrequency.toString(),
-                    isError = !timesPerFrequencyIsValid(timesPerFrequency, frequency),
+                    isError = timesPerFreqError,
+                    supportingText = {
+                        if (timesPerFreqError) {
+                            Text(
+                                text = stringResource(R.string.out_of_range),
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        if (timesPerFreqError) {
+                            ErrorIcon()
+                        }
+                    },
                     onValueChange = {
-                        timesPerFrequency = it.toIntOrNull() ?: 1
+                        timesPerFrequency = it.toIntOrNull() ?: 0
                         habitChange()
                     },
                 )
             }
 
             OutlinedTextField(
-                label = { Text(stringResource(R.string.notes)) },
+                label = { Text(stringResource(R.string.notes_optional)) },
                 modifier = Modifier.fillMaxWidth(),
                 value = notes,
                 onValueChange = {
@@ -163,3 +187,11 @@ fun habitFormValid(habit: Habit): Boolean =
             habit.timesPerFrequency,
             HabitFrequency.entries[habit.frequency],
         )
+
+@Composable
+fun ErrorIcon() =
+    Icon(
+        imageVector = Icons.Default.Info,
+        tint = MaterialTheme.colorScheme.error,
+        contentDescription = null,
+    )

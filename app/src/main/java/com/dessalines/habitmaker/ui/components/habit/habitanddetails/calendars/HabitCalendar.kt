@@ -37,6 +37,7 @@ import java.util.Locale
 fun HabitCalendar(
     habitChecks: List<HabitCheck>,
     onClickDay: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val checkDates = habitChecks.map { it.checkTime.epochMillisToLocalDate() }
 
@@ -54,6 +55,7 @@ fun HabitCalendar(
         )
 
     HorizontalCalendar(
+        modifier = modifier,
         state = state,
         monthHeader = { month ->
             MonthHeader(month)
@@ -65,6 +67,7 @@ fun HabitCalendar(
                 // Maybe a hashmap of dates?
                 checked = checkDates.contains(it.date),
                 onClick = { onClickDay(it.date) },
+                modifier = modifier,
             )
         },
     )
@@ -87,6 +90,7 @@ fun MonthHeader(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.titleLarge,
+            textDecoration = TextDecoration.Underline,
         )
         Row(modifier = Modifier.fillMaxWidth()) {
             for (dayOfWeek in daysOfWeek) {
@@ -94,7 +98,7 @@ fun MonthHeader(
                     text = dayOfWeek.getDisplayName(TextStyle.SHORT, locale),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.labelSmall,
                 )
             }
         }
@@ -106,6 +110,7 @@ fun Day(
     day: CalendarDay,
     checked: Boolean,
     onClick: (CalendarDay) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     //  Only allow clicking dates in the past
     val allowedDate = day.date.isBefore(LocalDate.now().plusDays(1))
@@ -113,7 +118,7 @@ fun Day(
 
     Box(
         modifier =
-            Modifier
+            modifier
                 .aspectRatio(1f)
                 .clickable(
                     enabled = allowedDate,

@@ -10,10 +10,13 @@ import android.os.Build
 const val TAG = "com.habitmaker"
 
 const val GITHUB_URL = "https://github.com/dessalines/habit-maker"
+const val USER_GUIDE_URL = "$GITHUB_URL/#user-guide"
+const val USER_GUIDE_URL_ENCOURAGEMENTS = "$GITHUB_URL/#encouragements"
 const val MATRIX_CHAT_URL = "https://matrix.to/#/#habit-maker:matrix.org"
 const val DONATE_URL = "https://liberapay.com/dessalines"
 const val LEMMY_URL = "https://lemmy.ml/c/habitmaker"
 const val MASTODON_URL = "https://mastodon.social/@dessalines"
+
 val SUCCESS_EMOJIS = listOf("🎉", "🥳", "🎈", "🎊", "🪇", "🎂", "🙌", "💯", "⭐")
 
 fun openLink(
