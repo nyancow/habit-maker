@@ -178,9 +178,18 @@ fun HabitsPane(
                     onHabitCheck,
                 )
                 item {
-                    if (filteredHabits.isEmpty()) {
+                    if (habits.isNullOrEmpty()) {
                         Text(
                             text = stringResource(R.string.no_habits),
+                            modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
+                        )
+                    }
+                }
+                // If there are habits, but they're filtered, then say all completed
+                item {
+                    if (!habits.isNullOrEmpty() && filteredHabits.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.all_completed_for_today),
                             modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
                         )
                     }
