@@ -177,6 +177,7 @@ fun HabitDetailPane(
                 item {
                     HabitChipsFlowRow(
                         habit = habit,
+                        // Dont do any settings-related filtering for the detail pane
                         settings = null,
                         modifier = Modifier.padding(horizontal = LARGE_PADDING),
                     )

@@ -138,6 +138,15 @@ data class SettingsUpdate(
     val hideStreakOnHome: Int,
 )
 
+data class SettingsUpdateHideCompleted(
+    val id: Int,
+    @ColumnInfo(
+        name = "hide_completed",
+        defaultValue = "0",
+    )
+    val hideCompleted: Int,
+)
+
 @Dao
 interface AppSettingsDao {
     @Query("SELECT * FROM AppSettings limit 1")
@@ -145,6 +154,9 @@ interface AppSettingsDao {
 
     @Update(entity = AppSettings::class)
     suspend fun updateSettings(settings: SettingsUpdate)
+
+    @Update(entity = AppSettings::class)
+    suspend fun updateHideCompleted(settings: SettingsUpdateHideCompleted)
 
     @Query("UPDATE AppSettings SET last_version_code_viewed = :versionCode")
     suspend fun updateLastVersionCode(versionCode: Int)
@@ -165,6 +177,11 @@ class AppSettingsRepository(
     @WorkerThread
     suspend fun updateSettings(settings: SettingsUpdate) {
         appSettingsDao.updateSettings(settings)
+    }
+
+    @WorkerThread
+    suspend fun updateHideCompleted(settings: SettingsUpdateHideCompleted) {
+        appSettingsDao.updateHideCompleted(settings)
     }
 
     @WorkerThread
@@ -198,6 +215,11 @@ class AppSettingsViewModel(
     fun updateSettings(settings: SettingsUpdate) =
         viewModelScope.launch {
             repository.updateSettings(settings)
+        }
+
+    fun updateHideCompleted(settings: SettingsUpdateHideCompleted) =
+        viewModelScope.launch {
+            repository.updateHideCompleted(settings)
         }
 
     fun updateLastVersionCodeViewed(versionCode: Int) =

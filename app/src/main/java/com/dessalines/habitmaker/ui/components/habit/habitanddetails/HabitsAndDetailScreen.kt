@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.habitmaker.R
-import com.dessalines.habitmaker.db.AppSettings
+import com.dessalines.habitmaker.db.AppSettingsViewModel
 import com.dessalines.habitmaker.db.Encouragement
 import com.dessalines.habitmaker.db.EncouragementViewModel
 import com.dessalines.habitmaker.db.HabitCheck
@@ -36,6 +36,7 @@ import com.dessalines.habitmaker.db.HabitCheckInsert
 import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitUpdateStats
 import com.dessalines.habitmaker.db.HabitViewModel
+import com.dessalines.habitmaker.db.SettingsUpdateHideCompleted
 import com.dessalines.habitmaker.utils.SUCCESS_EMOJIS
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
 import com.dessalines.habitmaker.utils.calculatePoints
@@ -59,7 +60,7 @@ import java.time.ZoneId
 @Composable
 fun HabitsAndDetailScreen(
     navController: NavController,
-    settings: AppSettings?,
+    appSettingsViewModel: AppSettingsViewModel,
     habitViewModel: HabitViewModel,
     encouragementViewModel: EncouragementViewModel,
     habitCheckViewModel: HabitCheckViewModel,
@@ -71,6 +72,7 @@ fun HabitsAndDetailScreen(
     val paneExpansionState = rememberPaneExpansionState()
     paneExpansionState.setFirstPaneProportion(0.4f)
 
+    val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
     val completedCount = settings?.completedCount ?: 0
     val defaultEncouragements = buildDefaultEncouragements()
 
@@ -139,6 +141,14 @@ fun HabitsAndDetailScreen(
                             },
                             onSettingsClick = {
                                 navController.navigate("settings")
+                            },
+                            onHideCompletedClick = {
+                                appSettingsViewModel.updateHideCompleted(
+                                    SettingsUpdateHideCompleted(
+                                        id = 1,
+                                        hideCompleted = it.toInt(),
+                                    ),
+                                )
                             },
                         )
                     }

@@ -14,10 +14,10 @@ import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.DataThresholding
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.outlined.SortByAlpha
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -292,7 +292,7 @@ fun SettingsScreen(
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
+                                imageVector = Icons.Outlined.Visibility,
                                 contentDescription = null,
                             )
                         },
@@ -308,7 +308,7 @@ fun SettingsScreen(
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
+                                imageVector = Icons.Outlined.Visibility,
                                 contentDescription = null,
                             )
                         },
@@ -325,7 +325,7 @@ fun SettingsScreen(
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
+                                imageVector = Icons.Outlined.Visibility,
                                 contentDescription = null,
                             )
                         },
@@ -342,7 +342,7 @@ fun SettingsScreen(
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
+                                imageVector = Icons.Outlined.Visibility,
                                 contentDescription = null,
                             )
                         },
@@ -359,7 +359,7 @@ fun SettingsScreen(
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Outlined.RemoveRedEye,
+                                imageVector = Icons.Outlined.Visibility,
                                 contentDescription = null,
                             )
                         },

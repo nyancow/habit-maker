@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
@@ -66,6 +68,7 @@ fun HabitsPane(
     onHabitCheck: (habitId: Int) -> Unit,
     onCreateHabitClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onHideCompletedClick: (Boolean) -> Unit,
     selectionState: SelectionVisibilityState<Int>,
     isListAndDetailVisible: Boolean,
 ) {
@@ -79,12 +82,38 @@ fun HabitsPane(
 
     val habitsByFrequency = buildHabitsByFrequency(filteredHabits)
 
+    val hideCompleted = (settings?.hideCompleted ?: 0).toBool()
+    val (hideIcon, hideText) =
+        if (hideCompleted) {
+            Pair(Icons.Default.VisibilityOff, stringResource(R.string.hide_completed))
+        } else {
+            Pair(Icons.Default.Visibility, stringResource(R.string.show_completed))
+        }
+
     Scaffold(
         topBar = {
             SimpleTopAppBar(
                 text = title,
                 scrollBehavior = scrollBehavior,
                 actions = {
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(hideText)
+                        },
+                    ) {
+                        IconButton(
+                            onClick = {
+                                onHideCompletedClick(!hideCompleted)
+                            },
+                        ) {
+                            Icon(
+                                hideIcon,
+                                contentDescription = hideText,
+                            )
+                        }
+                    }
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),

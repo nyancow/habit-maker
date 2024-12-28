@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
                             HabitsAndDetailScreen(
                                 navController = navController,
-                                settings = settings,
+                                appSettingsViewModel = appSettingsViewModel,
                                 habitViewModel = habitViewModel,
                                 encouragementViewModel = encouragementViewModel,
                                 habitCheckViewModel = habitCheckViewModel,
