@@ -21,11 +21,11 @@ fun Streak.duration(): Long =
         ).toDays()
         .plus(1)
 
-fun currentStreak(
+fun todayStreak(
     streaks: List<Streak>,
     todayDate: LocalDate,
 ): Long {
-    val currentStreak =
+    val todayStreak =
         streaks.lastOrNull()?.let {
             if (it.end == todayDate) {
                 it.duration()
@@ -33,7 +33,7 @@ fun currentStreak(
                 0
             }
         } ?: 0
-    return currentStreak
+    return todayStreak
 }
 
 fun calculateStreaks(habitChecks: List<HabitCheck>): List<Streak> {
@@ -75,10 +75,12 @@ fun calculatePoints(streaks: List<Streak>): Long {
 
     streaks.forEach {
         val duration = it.duration()
-        points += (duration * duration + duration) / 2
+        points += duration.nthTriangle()
     }
     return points
 }
+
+fun Long.nthTriangle() = (this * this + this) / 2
 
 /**
  * The percent complete score.
