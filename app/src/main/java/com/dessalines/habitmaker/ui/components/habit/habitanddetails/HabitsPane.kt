@@ -155,21 +155,24 @@ fun HabitsPane(
                         onHabitCheck,
                     )
                 }
-                item {
-                    if (habits.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(R.string.no_habits),
-                            modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
-                        )
+                // Only show the empties if they're loaded from the DB
+                habits?.let { habits ->
+                    if (habits.isEmpty()) {
+                        item {
+                            Text(
+                                text = stringResource(R.string.no_habits),
+                                modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
+                            )
+                        }
                     }
-                }
-                // If there are habits, but they're filtered, then say all completed
-                item {
-                    if (!habits.isNullOrEmpty() && filteredHabits.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.all_completed_for_today),
-                            modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
-                        )
+                    // If there are habits, but they're filtered, then say all completed
+                    if (habits.isNotEmpty() && filteredHabits.isEmpty()) {
+                        item {
+                            Text(
+                                text = stringResource(R.string.all_completed_for_today),
+                                modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
+                            )
+                        }
                     }
                 }
             }

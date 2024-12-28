@@ -40,6 +40,9 @@ import com.dessalines.habitmaker.ui.components.common.ShowChangelog
 import com.dessalines.habitmaker.ui.components.habit.CreateHabitScreen
 import com.dessalines.habitmaker.ui.components.habit.EditHabitScreen
 import com.dessalines.habitmaker.ui.components.habit.habitanddetails.HabitsAndDetailScreen
+import com.dessalines.habitmaker.ui.components.settings.BackupAndRestoreScreen
+import com.dessalines.habitmaker.ui.components.settings.BehaviorScreen
+import com.dessalines.habitmaker.ui.components.settings.LookAndFeelScreen
 import com.dessalines.habitmaker.ui.components.settings.SettingsScreen
 import com.dessalines.habitmaker.ui.theme.HabitMakerTheme
 
@@ -149,7 +152,6 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             SettingsScreen(
                                 navController = navController,
-                                appSettingsViewModel = appSettingsViewModel,
                             )
                         }
                         composable(
@@ -160,6 +162,25 @@ class MainActivity : AppCompatActivity() {
                             popExitTransition = exitAnimation(),
                         ) {
                             AboutScreen(
+                                navController = navController,
+                            )
+                        }
+                        composable(route = "lookAndFeel") {
+                            LookAndFeelScreen(
+                                navController = navController,
+                                appSettingsViewModel = appSettingsViewModel,
+                            )
+                        }
+                        composable(route = "behavior") {
+                            BehaviorScreen(
+                                navController = navController,
+                                appSettingsViewModel = appSettingsViewModel,
+                            )
+                        }
+                        composable(
+                            route = "backupAndRestore",
+                        ) {
+                            BackupAndRestoreScreen(
                                 navController = navController,
                             )
                         }

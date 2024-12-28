@@ -147,6 +147,64 @@ data class SettingsUpdateHideCompleted(
     val hideCompleted: Int,
 )
 
+data class SettingsUpdateTheme(
+    val id: Int,
+    @ColumnInfo(
+        name = "theme",
+        defaultValue = "0",
+    )
+    val theme: Int,
+    @ColumnInfo(
+        name = "theme_color",
+        defaultValue = "0",
+    )
+    val themeColor: Int,
+)
+
+data class SettingsUpdateBehavior(
+    val id: Int,
+    @ColumnInfo(
+        name = "sort",
+        defaultValue = "0",
+    )
+    val sort: Int,
+    @ColumnInfo(
+        name = "sort_order",
+        defaultValue = "0",
+    )
+    val sortOrder: Int,
+    @ColumnInfo(
+        name = "completed_count",
+        defaultValue = DEFAULT_COMPLETED_COUNT.toString(),
+    )
+    val completedCount: Int,
+    @ColumnInfo(
+        name = "hide_completed",
+        defaultValue = "0",
+    )
+    val hideCompleted: Int,
+    @ColumnInfo(
+        name = "hide_archived",
+        defaultValue = "0",
+    )
+    val hideArchived: Int,
+    @ColumnInfo(
+        name = "hide_points_on_home",
+        defaultValue = "0",
+    )
+    val hidePointsOnHome: Int,
+    @ColumnInfo(
+        name = "hide_score_on_home",
+        defaultValue = "0",
+    )
+    val hideScoreOnHome: Int,
+    @ColumnInfo(
+        name = "hide_streak_on_home",
+        defaultValue = "0",
+    )
+    val hideStreakOnHome: Int,
+)
+
 @Dao
 interface AppSettingsDao {
     @Query("SELECT * FROM AppSettings limit 1")
@@ -157,6 +215,12 @@ interface AppSettingsDao {
 
     @Update(entity = AppSettings::class)
     suspend fun updateHideCompleted(settings: SettingsUpdateHideCompleted)
+
+    @Update(entity = AppSettings::class)
+    suspend fun updateTheme(settings: SettingsUpdateTheme)
+
+    @Update(entity = AppSettings::class)
+    suspend fun updateBehavior(settings: SettingsUpdateBehavior)
 
     @Query("UPDATE AppSettings SET last_version_code_viewed = :versionCode")
     suspend fun updateLastVersionCode(versionCode: Int)
@@ -182,6 +246,16 @@ class AppSettingsRepository(
     @WorkerThread
     suspend fun updateHideCompleted(settings: SettingsUpdateHideCompleted) {
         appSettingsDao.updateHideCompleted(settings)
+    }
+
+    @WorkerThread
+    suspend fun updateTheme(settings: SettingsUpdateTheme) {
+        appSettingsDao.updateTheme(settings)
+    }
+
+    @WorkerThread
+    suspend fun updateBehavior(settings: SettingsUpdateBehavior) {
+        appSettingsDao.updateBehavior(settings)
     }
 
     @WorkerThread
@@ -220,6 +294,16 @@ class AppSettingsViewModel(
     fun updateHideCompleted(settings: SettingsUpdateHideCompleted) =
         viewModelScope.launch {
             repository.updateHideCompleted(settings)
+        }
+
+    fun updateTheme(settings: SettingsUpdateTheme) =
+        viewModelScope.launch {
+            repository.updateTheme(settings)
+        }
+
+    fun updateBehavior(settings: SettingsUpdateBehavior) =
+        viewModelScope.launch {
+            repository.updateBehavior(settings)
         }
 
     fun updateLastVersionCodeViewed(versionCode: Int) =
