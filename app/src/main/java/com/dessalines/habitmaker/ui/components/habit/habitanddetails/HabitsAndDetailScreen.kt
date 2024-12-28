@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.habitmaker.R
@@ -34,6 +35,7 @@ import com.dessalines.habitmaker.db.HabitCheckInsert
 import com.dessalines.habitmaker.db.HabitCheckViewModel
 import com.dessalines.habitmaker.db.HabitUpdateStats
 import com.dessalines.habitmaker.db.HabitViewModel
+import com.dessalines.habitmaker.utils.SUCCESS_EMOJIS
 import com.dessalines.habitmaker.utils.SelectionVisibilityState
 import com.dessalines.habitmaker.utils.calculatePoints
 import com.dessalines.habitmaker.utils.calculateScore
@@ -67,6 +69,7 @@ fun HabitsAndDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val completedCount = settings?.completedCount ?: 0
+    val defaultEncouragements = buildDefaultEncouragements()
 
     var selectedHabitId: Int? by rememberSaveable { mutableStateOf(id) }
     val habits by habitViewModel.getAll.asLiveData().observeAsState()
@@ -116,7 +119,8 @@ fun HabitsAndDetailScreen(
 
                                 // If successful, show a random encouragement
                                 if (todayStats.completed) {
-                                    val randomEncouragement = encouragementViewModel.getRandomForHabit(habitId)
+                                    val randomEncouragement =
+                                        encouragementViewModel.getRandomForHabit(habitId) ?: defaultEncouragements.random()
                                     val congratsMessage = buildCongratsSnackMessage(ctx, todayStats, randomEncouragement)
                                     scope.launch {
                                         snackbarHostState.showSnackbar(congratsMessage)
@@ -252,10 +256,11 @@ fun updateStatsForHabit(
 fun buildCongratsSnackMessage(
     ctx: Context,
     todayStats: HabitTodayStats,
-    encouragement: Encouragement?,
+    encouragement: Encouragement,
 ): String {
-    var messages = mutableListOf<String>()
-    encouragement?.let { messages.add(it.content) }
+    val randomSuccessEmoji = SUCCESS_EMOJIS.random()
+    val congratsLine = randomSuccessEmoji + " " + encouragement.content
+    var messages = mutableListOf<String>(congratsLine)
     if (todayStats.streak > 0) {
         messages.add(
             ctx.getString(
@@ -268,3 +273,17 @@ fun buildCongratsSnackMessage(
 
     return messages.joinToString("\n")
 }
+
+@Composable
+fun buildDefaultEncouragements() =
+    listOf(
+        stringResource(R.string.default_encouragement_1),
+        stringResource(R.string.default_encouragement_2),
+        stringResource(R.string.default_encouragement_3),
+    ).map {
+        Encouragement(
+            id = 0,
+            habitId = 0,
+            content = it,
+        )
+    }

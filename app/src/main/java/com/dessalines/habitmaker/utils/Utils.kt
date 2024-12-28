@@ -14,6 +14,7 @@ const val MATRIX_CHAT_URL = "https://matrix.to/#/#habit-maker:matrix.org"
 const val DONATE_URL = "https://liberapay.com/dessalines"
 const val LEMMY_URL = "https://lemmy.ml/c/habitmaker"
 const val MASTODON_URL = "https://mastodon.social/@dessalines"
+val SUCCESS_EMOJIS = listOf("🎉", "🥳", "🎈", "🎊", "🪇", "🎂", "🙌", "💯", "⭐")
 
 fun openLink(
     url: String,
