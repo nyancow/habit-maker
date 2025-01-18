@@ -1,3 +1,9 @@
+## What's Changed in 0.0.12
+
+- Reminders by @dessalines in [#47](https://github.com/dessalines/habit-maker/pull/47)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.11...0.0.12
+
 ## What's Changed in 0.0.11
 
 - Trying to fix fastlane image. by @dessalines
