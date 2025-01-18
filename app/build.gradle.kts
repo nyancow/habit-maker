@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "34.0.0"
+    buildToolsVersion = "35.0.0"
     compileSdk = 35
 
     defaultConfig {
@@ -84,6 +84,9 @@ android {
 }
 
 dependencies {
+
+    // Workmanager
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 
     // Compose-Calendar
     implementation("com.kizitonwose.calendar:compose:2.6.1")
