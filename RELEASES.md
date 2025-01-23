@@ -1,3 +1,9 @@
+## What's Changed in 0.0.13
+
+- Remove notification policy permission. by @dessalines in [#49](https://github.com/dessalines/habit-maker/pull/49)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.12...0.0.13
+
 ## What's Changed in 0.0.12
 
 - Reminders by @dessalines in [#47](https://github.com/dessalines/habit-maker/pull/47)
