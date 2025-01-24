@@ -1,3 +1,9 @@
+## What's Changed in 0.0.14
+
+- Try to force remove network perm. by @dessalines in [#50](https://github.com/dessalines/habit-maker/pull/50)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.13...0.0.14
+
 ## What's Changed in 0.0.13
 
 - Remove notification policy permission. by @dessalines in [#49](https://github.com/dessalines/habit-maker/pull/49)
