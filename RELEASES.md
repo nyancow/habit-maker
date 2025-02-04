@@ -1,7 +1,14 @@
+## What's Changed in 0.0.16
+
+- Skipping weblate updates for git cliff. by @dessalines
+- Adding an expanded header. by @dessalines in [#72](https://github.com/dessalines/habit-maker/pull/72)
+- Add f-droid links, and weblate to readme. by @dessalines in [#60](https://github.com/dessalines/habit-maker/pull/60)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.15...0.0.16
+
 ## What's Changed in 0.0.15
 
 - Fixing crash on switch screen. by @dessalines in [#56](https://github.com/dessalines/habit-maker/pull/56)
-- Translations update from Hosted Weblate by @weblate in [#53](https://github.com/dessalines/habit-maker/pull/53)
 - Use svg badge by @dessalines
 - Adding contributing.md. Fixes #51 by @dessalines in [#54](https://github.com/dessalines/habit-maker/pull/54)
 
