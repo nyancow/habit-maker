@@ -1,3 +1,9 @@
+## What's Changed in 0.0.17
+
+- Add hide_description to only show icon and number for info chips. by @dessalines in [#74](https://github.com/dessalines/habit-maker/pull/74)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.16...0.0.17
+
 ## What's Changed in 0.0.16
 
 - Skipping weblate updates for git cliff. by @dessalines
