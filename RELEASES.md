@@ -1,3 +1,9 @@
+## What's Changed in 0.0.18
+
+- After checking habit, reschedule reminders, skipping today. by @dessalines in [#80](https://github.com/dessalines/habit-maker/pull/80)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.17...0.0.18
+
 ## What's Changed in 0.0.17
 
 - Add hide_description to only show icon and number for info chips. by @dessalines in [#74](https://github.com/dessalines/habit-maker/pull/74)
