@@ -1,3 +1,9 @@
+## What's Changed in 0.0.19
+
+- Make sure that reminders are removed when deleting habit. by @dessalines in [#83](https://github.com/dessalines/habit-maker/pull/83)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.18...0.0.19
+
 ## What's Changed in 0.0.18
 
 - After checking habit, reschedule reminders, skipping today. by @dessalines in [#80](https://github.com/dessalines/habit-maker/pull/80)
