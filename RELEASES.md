@@ -1,3 +1,9 @@
+## What's Changed in 0.0.21
+
+- Use not completed yesterday for stats updating. by @dessalines in [#100](https://github.com/dessalines/habit-maker/pull/100)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.20...0.0.21
+
 ## What's Changed in 0.0.20
 
 - Update habit streaks / score stats on startup. by @dessalines in [#97](https://github.com/dessalines/habit-maker/pull/97)
