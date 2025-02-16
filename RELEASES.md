@@ -1,3 +1,9 @@
+## What's Changed in 0.0.20
+
+- Update habit streaks / score stats on startup. by @dessalines in [#97](https://github.com/dessalines/habit-maker/pull/97)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.19...0.0.20
+
 ## What's Changed in 0.0.19
 
 - Make sure that reminders are removed when deleting habit. by @dessalines in [#83](https://github.com/dessalines/habit-maker/pull/83)
