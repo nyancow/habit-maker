@@ -1,3 +1,10 @@
+## What's Changed in 0.0.22
+
+- Adding days completed info chip, and ability to hide it on home. by @dessalines in [#105](https://github.com/dessalines/habit-maker/pull/105)
+- Merge remote-tracking branch 'refs/remotes/origin/main' by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.21...0.0.22
+
 ## What's Changed in 0.0.21
 
 - Use not completed yesterday for stats updating. by @dessalines in [#100](https://github.com/dessalines/habit-maker/pull/100)
