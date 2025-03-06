@@ -1,3 +1,9 @@
+## What's Changed in 0.0.23
+
+- Fix section padding. by @dessalines in [#120](https://github.com/dessalines/habit-maker/pull/120)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.22...0.0.23
+
 ## What's Changed in 0.0.22
 
 - Adding days completed info chip, and ability to hide it on home. by @dessalines in [#105](https://github.com/dessalines/habit-maker/pull/105)
