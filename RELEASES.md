@@ -1,3 +1,9 @@
+## What's Changed in 0.0.24
+
+- A few code fixes. by @dessalines in [#134](https://github.com/dessalines/habit-maker/pull/134)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.23...0.0.24
+
 ## What's Changed in 0.0.23
 
 - Fix section padding. by @dessalines in [#120](https://github.com/dessalines/habit-maker/pull/120)
