@@ -1,3 +1,9 @@
+## What's Changed in 0.0.28
+
+- Try to fix habit schedules on startup. #176 by @dessalines in [#178](https://github.com/dessalines/habit-maker/pull/178)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.27...0.0.28
+
 ## What's Changed in 0.0.24
 
 - A few code fixes. by @dessalines in [#134](https://github.com/dessalines/habit-maker/pull/134)
