@@ -1,3 +1,10 @@
+## What's Changed in 0.0.29
+
+- Adding android lint. by @dessalines in [#182](https://github.com/dessalines/habit-maker/pull/182)
+- Fixing delete crash. Fixes #180 by @dessalines in [#181](https://github.com/dessalines/habit-maker/pull/181)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.28...0.0.29
+
 ## What's Changed in 0.0.28
 
 - Try to fix habit schedules on startup. #176 by @dessalines in [#178](https://github.com/dessalines/habit-maker/pull/178)
