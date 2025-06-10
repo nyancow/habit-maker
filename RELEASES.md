@@ -1,3 +1,13 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## What's Changed in 0.0.30
+
+- Adding pretty number format for streaks, points. by @dessalines in [#201](https://github.com/dessalines/habit-maker/pull/201)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.29...0.0.30
+
 ## What's Changed in 0.0.29
 
 - Adding android lint. by @dessalines in [#182](https://github.com/dessalines/habit-maker/pull/182)
