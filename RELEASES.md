@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## What's Changed in 0.0.31
+
+- Using points as a tie-breaker sort. by @dessalines in [#210](https://github.com/dessalines/habit-maker/pull/210)
+- Better ntfy notifs. by @dessalines in [#203](https://github.com/dessalines/habit-maker/pull/203)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.30...0.0.31
+
 ## What's Changed in 0.0.30
 
 - Adding pretty number format for streaks, points. by @dessalines in [#201](https://github.com/dessalines/habit-maker/pull/201)
