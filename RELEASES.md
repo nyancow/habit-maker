@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## What's Changed in 0.0.32
+
+- Code cleanup by @dessalines in [#224](https://github.com/dessalines/habit-maker/pull/224)
+- Adding a customizeable first day of the week. by @dessalines in [#221](https://github.com/dessalines/habit-maker/pull/221)
+- Adding dismissable congrats message. by @dessalines in [#220](https://github.com/dessalines/habit-maker/pull/220)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.31...0.0.32
+
 ## What's Changed in 0.0.31
 
 - Using points as a tie-breaker sort. by @dessalines in [#210](https://github.com/dessalines/habit-maker/pull/210)
