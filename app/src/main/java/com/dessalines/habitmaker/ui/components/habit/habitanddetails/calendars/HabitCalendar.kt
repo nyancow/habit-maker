@@ -28,28 +28,28 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.dessalines.habitmaker.db.HabitCheck
+import com.dessalines.habitmaker.db.sampleHabitChecks
 import com.dessalines.habitmaker.ui.components.common.MEDIUM_PADDING
 import com.dessalines.habitmaker.utils.epochMillisToLocalDate
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
-import java.time.DayOfWeek
-import com.dessalines.habitmaker.db.sampleHabitChecks
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.compose.OnParticleSystemUpdateListener
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HabitCalendar(
