@@ -47,7 +47,7 @@ import com.dessalines.habitmaker.db.Habit
 import com.dessalines.habitmaker.db.sampleHabit
 import com.dessalines.habitmaker.ui.components.common.HabitChipsFlowRow
 import com.dessalines.habitmaker.ui.components.common.LARGE_PADDING
-import com.dessalines.habitmaker.ui.components.common.SectionDivider
+import com.dessalines.habitmaker.ui.components.common.MEDIUM_PADDING
 import com.dessalines.habitmaker.ui.components.common.SectionTitle
 import com.dessalines.habitmaker.ui.components.common.TodayCompletedCount
 import com.dessalines.habitmaker.ui.components.common.ToolTip
@@ -253,7 +253,7 @@ fun LazyListScope.habitFrequencySection(
             }
         }
         item {
-            SectionDivider()
+            HorizontalDivider(modifier = Modifier.padding(bottom = MEDIUM_PADDING))
         }
     }
 }
@@ -261,11 +261,11 @@ fun LazyListScope.habitFrequencySection(
 @Composable
 fun HabitRow(
     habit: Habit,
+    modifier: Modifier = Modifier,
     settings: AppSettings?,
     selected: Boolean = false,
     onCheck: () -> Unit,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val containerColor =
         if (!selected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant
@@ -323,7 +323,7 @@ fun HabitRowPreview() {
 }
 
 data class HabitListAndTitle(
-    @StringRes val titleResId: Int,
+    @param:StringRes val titleResId: Int,
     val list: List<Habit>,
 )
 
@@ -346,12 +346,12 @@ fun filterAndSortHabits(
     // Sorting
     val sortSetting = HabitSort.entries[settings?.sort ?: 0]
     when (sortSetting) {
-        HabitSort.Name -> tmp.sortBy { it.name }
-        HabitSort.Points -> tmp.sortBy { it.points }
-        HabitSort.Score -> tmp.sortBy { it.score }
-        HabitSort.Streak -> tmp.sortBy { it.streak }
-        HabitSort.Status -> tmp.sortBy { isVirtualCompleted(it.lastStreakTime) }
-        HabitSort.DateCreated -> tmp.sortBy { it.id }
+        HabitSort.Name -> tmp.sortedBy { it.name }
+        HabitSort.Points -> tmp.sortedBy { it.points }
+        HabitSort.Score -> tmp.sortWith(compareBy({ it.score }, { it.points }))
+        HabitSort.Streak -> tmp.sortWith(compareBy({ it.streak }, { it.points }))
+        HabitSort.Status -> tmp.sortWith(compareBy({ isVirtualCompleted(it.lastStreakTime) }, { it.points }))
+        HabitSort.DateCreated -> tmp.sortedBy { it.id }
     }
     val sortOrder = HabitSortOrder.entries[settings?.sortOrder ?: 0]
     if (sortOrder == HabitSortOrder.Descending) {

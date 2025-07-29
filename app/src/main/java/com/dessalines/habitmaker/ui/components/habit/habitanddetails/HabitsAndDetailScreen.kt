@@ -57,7 +57,9 @@ import com.dessalines.habitmaker.utils.nthTriangle
 import com.dessalines.habitmaker.utils.toEpochMillis
 import com.dessalines.habitmaker.utils.toInt
 import com.dessalines.habitmaker.utils.todayStreak
+import com.dessalines.prettyFormat
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -87,6 +89,7 @@ fun HabitsAndDetailScreen(
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
     val completedCount = settings?.completedCount ?: 0
     val defaultEncouragements = buildDefaultEncouragements()
+    val firstDayOfWeek = settings?.firstDayOfWeek ?: DayOfWeek.SUNDAY
 
     var selectedHabitId: Int? by rememberSaveable { mutableStateOf(id) }
     val habits by habitViewModel.getAll.asLiveData().observeAsState()
@@ -147,6 +150,7 @@ fun HabitsAndDetailScreen(
                                             habitViewModel,
                                             checks,
                                             completedCount,
+                                            firstDayOfWeek,
                                         )
 
                                     // If successful, show a random encouragement
@@ -164,7 +168,10 @@ fun HabitsAndDetailScreen(
                                                 encouragement = randomEncouragement,
                                             )
                                         scope.launch {
-                                            snackbarHostState.showSnackbar(congratsMessage)
+                                            snackbarHostState.showSnackbar(
+                                                message = congratsMessage,
+                                                withDismissAction = true,
+                                            )
                                         }
                                     }
                                     // Reschedule the reminders, to skip completed today
@@ -213,6 +220,7 @@ fun HabitsAndDetailScreen(
                                 HabitDetailPane(
                                     habit = habit,
                                     habitChecks = habitChecks.orEmpty(),
+                                    firstDayOfWeek = firstDayOfWeek,
                                     isListAndDetailVisible = isListAndDetailVisible,
                                     onEditClick = {
                                         navController.navigate("editHabit/${habit.id}")
@@ -229,11 +237,11 @@ fun HabitsAndDetailScreen(
                                             navigator.navigateBack()
                                         }
                                     },
-                                    onHabitCheck = {
+                                    onHabitCheck = { localDate ->
                                         val habit = habits?.find { it.id == habitId }
                                         habit?.let { habit ->
                                             val checkTime =
-                                                it
+                                                localDate
                                                     .atStartOfDay(ZoneId.systemDefault())
                                                     .toInstant()
                                                     .toEpochMilli()
@@ -250,6 +258,7 @@ fun HabitsAndDetailScreen(
                                                     habitViewModel,
                                                     checks,
                                                     completedCount,
+                                                    firstDayOfWeek,
                                                 )
                                             // Reschedule the reminders, to skip completed today
                                             val isCompleted = isCompletedToday(stats.lastCompletedTime)
@@ -304,13 +313,14 @@ fun updateStatsForHabit(
     habitViewModel: HabitViewModel,
     checks: List<HabitCheck>,
     completedCount: Int,
+    firstDayOfWeek: DayOfWeek,
 ): HabitUpdateStats {
     val dateChecks = checks.map { it.checkTime.epochMillisToLocalDate() }
 
     val frequency = HabitFrequency.entries[habit.frequency]
 
     // Calculating a few totals
-    val streaks = calculateStreaks(frequency, habit.timesPerFrequency, dateChecks)
+    val streaks = calculateStreaks(frequency, habit.timesPerFrequency, dateChecks, firstDayOfWeek)
     val points = calculatePoints(frequency, streaks)
     val score = calculateScore(checks, completedCount)
 
@@ -345,7 +355,7 @@ fun buildCongratsSnackMessage(
 ): String {
     val randomSuccessEmoji = SUCCESS_EMOJIS.random()
     val congratsLine = randomSuccessEmoji + " " + encouragement.content
-    var messages = mutableListOf<String>(congratsLine)
+    val messages = mutableListOf(congratsLine)
     val todayPoints = stats.streak.toLong().nthTriangle()
 
     val resId =
@@ -359,8 +369,8 @@ fun buildCongratsSnackMessage(
         messages.add(
             ctx.getString(
                 resId,
-                stats.streak.toString(),
-                todayPoints,
+                prettyFormat(stats.streak),
+                prettyFormat(todayPoints),
             ),
         )
     }

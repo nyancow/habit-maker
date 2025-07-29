@@ -6,15 +6,15 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "35.0.0"
-    compileSdk = 35
+    buildToolsVersion = "36.0.0"
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.dessalines.habitmaker"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 22
-        versionName = "0.0.22"
+        targetSdk = 36
+        versionCode = 33
+        versionName = "0.0.33"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -45,6 +45,7 @@ android {
             }
         }
     }
+
     buildTypes {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -69,6 +70,12 @@ android {
         }
     }
 
+    lint {
+        disable += "MissingTranslation"
+        disable += "KtxExtensionAvailable"
+        disable += "UseKtx"
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -84,12 +91,14 @@ android {
 }
 
 dependencies {
+    // PrettyNum
+    implementation("com.github.dessalines:pretty-num-kotlin:0.0.2")
 
     // Workmanager
-    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("androidx.work:work-runtime-ktx:2.10.2")
 
     // Compose-Calendar
-    implementation("com.kizitonwose.calendar:compose:2.6.2")
+    implementation("com.kizitonwose.calendar:compose:2.8.0")
 
     // Konfetti for confetti animations
     implementation("nl.dionsegijn:konfetti-compose:2.0.5")
@@ -98,18 +107,18 @@ dependencies {
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
     // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.07.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.8")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
 
     // Adaptive layouts
-    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-rc01")
-    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-rc01")
-    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-rc01")
+    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 
     // Activities
@@ -117,26 +126,26 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
 
     // LiveData
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.2")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation("androidx.navigation:navigation-compose:2.9.2")
 
     // Markdown
-    implementation("com.github.jeziellago:compose-markdown:0.5.6")
+    implementation("com.github.jeziellago:compose-markdown:0.5.7")
 
     // Preferences
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     // Room
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.room:room-runtime:2.7.2")
+    annotationProcessor("androidx.room:room-compiler:2.7.2")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-ktx:2.7.2")
 
     // App compat
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
 }

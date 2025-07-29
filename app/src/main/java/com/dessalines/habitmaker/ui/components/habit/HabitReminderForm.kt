@@ -51,6 +51,7 @@ import java.util.Locale
 @Composable
 fun HabitRemindersForm(
     initialReminders: List<HabitReminder>,
+    firstDayOfWeek: DayOfWeek,
     onChange: (List<HabitReminder>) -> Unit,
 ) {
     val ctx = LocalContext.current
@@ -85,7 +86,7 @@ fun HabitRemindersForm(
     }
 
     // Necessary to match the enum ordinals
-    val daysOfWeek = daysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY)
+    val daysOfWeek = daysOfWeek(firstDayOfWeek)
 
     var frequency by rememberSaveable {
         val freq =
@@ -112,7 +113,7 @@ fun HabitRemindersForm(
     fun habitRemindersChange() =
         onChange(
             when (frequency) {
-                HabitReminderFrequency.NoReminders -> emptyList<HabitReminder>()
+                HabitReminderFrequency.NoReminders -> emptyList()
                 HabitReminderFrequency.EveryDay -> {
                     daysToReminders(daysOfWeek, habitId, timePickerState)
                 }
@@ -140,7 +141,7 @@ fun HabitRemindersForm(
     ) {
         ProvidePreferenceTheme {
             ListPreference(
-                modifier = textFieldBorder(),
+                modifier = Modifier.textFieldBorder(),
                 type = ListPreferenceType.DROPDOWN_MENU,
                 value = frequency,
                 onValueChange = {
@@ -201,7 +202,7 @@ fun HabitRemindersForm(
                 frequency == HabitReminderFrequency.SpecificDays,
             ) {
                 MultiSelectListPreference(
-                    modifier = textFieldBorder(),
+                    modifier = Modifier.textFieldBorder(),
                     title = { Text(stringResource(R.string.days)) },
                     summary = {
                         val daysStr = days.joinToString { it.toLocaleStr(locale) }
@@ -227,6 +228,7 @@ fun HabitRemindersForm(
 fun HabitRemindersFormPreview() {
     HabitRemindersForm(
         initialReminders = emptyList(),
+        firstDayOfWeek = DayOfWeek.SUNDAY,
         onChange = {},
     )
 }
@@ -245,4 +247,4 @@ fun daysToReminders(
     )
 }
 
-fun DayOfWeek.toLocaleStr(locale: Locale) = this.getDisplayName(TextStyle.SHORT, locale)
+fun DayOfWeek.toLocaleStr(locale: Locale): String = this.getDisplayName(TextStyle.SHORT, locale)

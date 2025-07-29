@@ -1,3 +1,53 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## What's Changed in 0.0.32
+
+- Code cleanup by @dessalines in [#224](https://github.com/dessalines/habit-maker/pull/224)
+- Adding a customizeable first day of the week. by @dessalines in [#221](https://github.com/dessalines/habit-maker/pull/221)
+- Adding dismissable congrats message. by @dessalines in [#220](https://github.com/dessalines/habit-maker/pull/220)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.31...0.0.32
+
+## What's Changed in 0.0.31
+
+- Using points as a tie-breaker sort. by @dessalines in [#210](https://github.com/dessalines/habit-maker/pull/210)
+- Better ntfy notifs. by @dessalines in [#203](https://github.com/dessalines/habit-maker/pull/203)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.30...0.0.31
+
+## What's Changed in 0.0.30
+
+- Adding pretty number format for streaks, points. by @dessalines in [#201](https://github.com/dessalines/habit-maker/pull/201)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.29...0.0.30
+
+## What's Changed in 0.0.29
+
+- Adding android lint. by @dessalines in [#182](https://github.com/dessalines/habit-maker/pull/182)
+- Fixing delete crash. Fixes #180 by @dessalines in [#181](https://github.com/dessalines/habit-maker/pull/181)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.28...0.0.29
+
+## What's Changed in 0.0.28
+
+- Try to fix habit schedules on startup. #176 by @dessalines in [#178](https://github.com/dessalines/habit-maker/pull/178)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.27...0.0.28
+
+## What's Changed in 0.0.24
+
+- A few code fixes. by @dessalines in [#134](https://github.com/dessalines/habit-maker/pull/134)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.23...0.0.24
+
+## What's Changed in 0.0.23
+
+- Fix section padding. by @dessalines in [#120](https://github.com/dessalines/habit-maker/pull/120)
+
+**Full Changelog**: https://github.com/dessalines/habit-maker/compare/0.0.22...0.0.23
+
 ## What's Changed in 0.0.22
 
 - Adding days completed info chip, and ability to hide it on home. by @dessalines in [#105](https://github.com/dessalines/habit-maker/pull/105)

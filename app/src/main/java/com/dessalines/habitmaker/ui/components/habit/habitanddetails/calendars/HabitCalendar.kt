@@ -110,6 +110,8 @@ fun HabitCalendar(
             dayContent = { calendarDay ->
                 Day(
                     day = calendarDay,
+                    // TODO probably a more efficient way to do this
+                    // Maybe a hashmap of dates?
                     checked = checkDates.contains(calendarDay.date),
                     onClick = { clickedDay, windowOffset, wasChecked ->
                         // Store clicked info for post-update processing

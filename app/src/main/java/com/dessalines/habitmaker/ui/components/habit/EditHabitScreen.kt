@@ -20,14 +20,17 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.habitmaker.R
+import com.dessalines.habitmaker.db.AppSettingsViewModel
 import com.dessalines.habitmaker.db.EncouragementInsert
 import com.dessalines.habitmaker.db.EncouragementViewModel
 import com.dessalines.habitmaker.db.HabitReminderInsert
@@ -38,16 +41,21 @@ import com.dessalines.habitmaker.notifications.scheduleRemindersForHabit
 import com.dessalines.habitmaker.ui.components.common.BackButton
 import com.dessalines.habitmaker.ui.components.common.ToolTip
 import com.dessalines.habitmaker.utils.isCompletedToday
+import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EditHabitScreen(
     navController: NavController,
+    appSettingsViewModel: AppSettingsViewModel,
     habitViewModel: HabitViewModel,
     encouragementViewModel: EncouragementViewModel,
     reminderViewModel: HabitReminderViewModel,
     id: Int,
 ) {
+    val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
+    val firstDayOfWeek = settings?.firstDayOfWeek ?: DayOfWeek.SUNDAY
+
     val ctx = LocalContext.current
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
@@ -94,6 +102,7 @@ fun EditHabitScreen(
                 )
                 HabitRemindersForm(
                     initialReminders = editedReminders,
+                    firstDayOfWeek = firstDayOfWeek,
                     onChange = { editedReminders = it },
                 )
                 EncouragementsForm(
@@ -113,52 +122,54 @@ fun EditHabitScreen(
                 FloatingActionButton(
                     modifier = Modifier.imePadding(),
                     onClick = {
-                        if (habitFormValid(editedHabit)) {
-                            val update =
-                                HabitUpdate(
-                                    id = editedHabit.id,
-                                    name = editedHabit.name,
-                                    frequency = editedHabit.frequency,
-                                    timesPerFrequency = editedHabit.timesPerFrequency,
-                                    notes = editedHabit.notes,
-                                    context = editedHabit.context,
-                                    archived = editedHabit.archived,
+                        editedHabit?.let { editedHabit ->
+                            if (habitFormValid(editedHabit)) {
+                                val update =
+                                    HabitUpdate(
+                                        id = editedHabit.id,
+                                        name = editedHabit.name,
+                                        frequency = editedHabit.frequency,
+                                        timesPerFrequency = editedHabit.timesPerFrequency,
+                                        notes = editedHabit.notes,
+                                        context = editedHabit.context,
+                                        archived = editedHabit.archived,
+                                    )
+                                habitViewModel.update(update)
+
+                                // Delete then add all the reminders
+                                reminderViewModel.delete(editedHabit.id)
+                                editedReminders.forEach {
+                                    val insert =
+                                        HabitReminderInsert(
+                                            habitId = editedHabit.id,
+                                            time = it.time,
+                                            day = it.day,
+                                        )
+                                    reminderViewModel.insert(insert)
+                                }
+
+                                // Reschedule the reminders for that habit
+                                val isCompleted = isCompletedToday(editedHabit.lastCompletedTime)
+                                scheduleRemindersForHabit(
+                                    ctx,
+                                    editedReminders,
+                                    editedHabit.name,
+                                    editedHabit.id,
+                                    isCompleted,
                                 )
-                            habitViewModel.update(update)
 
-                            // Delete then add all the reminders
-                            reminderViewModel.delete(editedHabit.id)
-                            editedReminders.forEach {
-                                val insert =
-                                    HabitReminderInsert(
-                                        habitId = editedHabit.id,
-                                        time = it.time,
-                                        day = it.day,
-                                    )
-                                reminderViewModel.insert(insert)
+                                // Delete then add all the encouragements
+                                encouragementViewModel.deleteForHabit(editedHabit.id)
+                                editedEncouragements.forEach {
+                                    val insert =
+                                        EncouragementInsert(
+                                            habitId = editedHabit.id,
+                                            content = it.content,
+                                        )
+                                    encouragementViewModel.insert(insert)
+                                }
+                                navController.navigateUp()
                             }
-
-                            // Reschedule the reminders for that habit
-                            val isCompleted = isCompletedToday(habit.lastCompletedTime)
-                            scheduleRemindersForHabit(
-                                ctx,
-                                editedReminders,
-                                editedHabit.name,
-                                editedHabit.id,
-                                isCompleted,
-                            )
-
-                            // Delete then add all the encouragements
-                            encouragementViewModel.deleteForHabit(editedHabit.id)
-                            editedEncouragements.forEach {
-                                val insert =
-                                    EncouragementInsert(
-                                        habitId = editedHabit.id,
-                                        content = it.content,
-                                    )
-                                encouragementViewModel.insert(insert)
-                            }
-                            navController.navigateUp()
                         }
                     },
                     shape = CircleShape,

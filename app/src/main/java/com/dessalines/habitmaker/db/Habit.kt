@@ -204,10 +204,10 @@ interface HabitDao {
     fun getAllSync(): List<Habit>
 
     @Query(BY_ID_QUERY)
-    fun getById(id: Int): Flow<Habit>
+    fun getById(id: Int): Flow<Habit?>
 
     @Query(BY_ID_QUERY)
-    fun getByIdSync(id: Int): Habit
+    fun getByIdSync(id: Int): Habit?
 
     @Insert(entity = Habit::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(habit: HabitInsert): Long
@@ -299,7 +299,7 @@ val sampleHabit =
         notes = null,
         context = "After breakfast, in my room",
         archived = 0,
-        points = 0,
+        points = 1377,
         score = 0,
         streak = 0,
         completed = 0,

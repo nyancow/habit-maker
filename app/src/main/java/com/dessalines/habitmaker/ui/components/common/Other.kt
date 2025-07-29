@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -33,6 +32,7 @@ import com.dessalines.habitmaker.db.sampleHabit
 import com.dessalines.habitmaker.utils.HabitFrequency
 import com.dessalines.habitmaker.utils.HabitStatus
 import com.dessalines.habitmaker.utils.toBool
+import com.dessalines.prettyFormat
 
 @Composable
 fun SectionTitle(title: String) =
@@ -51,15 +51,13 @@ fun TodayCompletedCount(todayCompletedCount: Int) =
     )
 
 @Composable
-fun SectionDivider() = HorizontalDivider(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
-
-@Composable
-fun textFieldBorder() =
-    Modifier.border(
-        width = OutlinedTextFieldDefaults.UnfocusedBorderThickness,
-        color = OutlinedTextFieldDefaults.colors().unfocusedIndicatorColor,
-        shape = OutlinedTextFieldDefaults.shape,
-    )
+fun Modifier.textFieldBorder(): Modifier =
+    this then
+        Modifier.border(
+            width = OutlinedTextFieldDefaults.UnfocusedBorderThickness,
+            color = OutlinedTextFieldDefaults.colors().unfocusedIndicatorColor,
+            shape = OutlinedTextFieldDefaults.shape,
+        )
 
 @Composable
 fun HabitInfoChip(
@@ -121,10 +119,10 @@ fun HabitChipsFlowRow(
                             HabitFrequency.Monthly -> R.string.x_month_streak
                             HabitFrequency.Yearly -> R.string.x_year_streak
                         },
-                        habit.streak.toString(),
+                        prettyFormat(habit.streak),
                     )
                 } else {
-                    habit.streak.toString()
+                    prettyFormat(habit.streak)
                 }
             HabitInfoChip(
                 text = text,
@@ -137,10 +135,10 @@ fun HabitChipsFlowRow(
                 if (!(settings?.hideChipDescriptions ?: 0).toBool()) {
                     stringResource(
                         R.string.x_points,
-                        habit.points.toString(),
+                        prettyFormat(habit.points),
                     )
                 } else {
-                    habit.points.toString()
+                    prettyFormat(habit.points)
                 }
             HabitInfoChip(
                 text = text,
@@ -168,10 +166,10 @@ fun HabitChipsFlowRow(
                 if (!(settings?.hideChipDescriptions ?: 0).toBool()) {
                     stringResource(
                         R.string.x_days_completed,
-                        habit.completed.toString(),
+                        prettyFormat(habit.completed),
                     )
                 } else {
-                    habit.completed.toString()
+                    prettyFormat(habit.completed)
                 }
 
             HabitInfoChip(
