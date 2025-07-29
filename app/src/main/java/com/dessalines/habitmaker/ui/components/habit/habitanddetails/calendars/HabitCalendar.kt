@@ -37,7 +37,8 @@ import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
-import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import java.time.DayOfWeek
+import com.dessalines.habitmaker.db.sampleHabitChecks
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.compose.OnParticleSystemUpdateListener
 import nl.dionsegijn.konfetti.core.Party
@@ -52,6 +53,7 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun HabitCalendar(
     habitChecks: List<HabitCheck>,
+    firstDayOfWeek: DayOfWeek,
     onClickDay: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -60,7 +62,7 @@ fun HabitCalendar(
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) }
     val endMonth = remember { currentMonth }
-    val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
+    val firstDayOfWeek = remember { firstDayOfWeek }
 
     val state =
         rememberCalendarState(
@@ -264,6 +266,7 @@ fun Day(
 fun HabitCalendarPreview() {
     HabitCalendar(
         habitChecks = sampleHabitChecks,
+        firstDayOfWeek = DayOfWeek.SUNDAY,
         onClickDay = {},
     )
 }
