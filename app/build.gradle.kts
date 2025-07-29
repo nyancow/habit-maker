@@ -91,6 +91,9 @@ dependencies {
     // Compose-Calendar
     implementation("com.kizitonwose.calendar:compose:2.6.2")
 
+    // Konfetti for confetti animations
+    implementation("nl.dionsegijn:konfetti-compose:2.0.5")
+
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
