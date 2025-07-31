@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
@@ -32,6 +35,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun HabitCalendar(
@@ -134,23 +138,39 @@ fun Day(
                 contentDescription = null,
             )
         } else {
-            Text(
-                text = day.date.dayOfMonth.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                // Underline today's date
-                textDecoration =
-                    if (isToday) {
-                        TextDecoration.Underline
-                    } else {
-                        TextDecoration.None
-                    },
-                color =
-                    if (allowedDate) {
-                        MaterialTheme.colorScheme.onSurface
-                    } else {
-                        MaterialTheme.colorScheme.outline
-                    },
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                if (isToday) {
+                    Modifier
+                        .size(32.dp)
+                        .border(
+                            width = 2.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape,
+                        )
+                } else {
+                    Modifier
+                },
+            ) {
+                Text(
+                    text = day.date.dayOfMonth.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    // Underline today's date
+                    textDecoration =
+                        if (isToday) {
+                            TextDecoration.Underline
+                        } else {
+                            TextDecoration.None
+                        },
+                    color =
+                        if (allowedDate) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.outline
+                        },
+                )
+            }
         }
     }
 }
