@@ -156,13 +156,7 @@ fun Day(
                 Text(
                     text = day.date.dayOfMonth.toString(),
                     style = MaterialTheme.typography.bodyMedium,
-                    // Underline today's date
-                    textDecoration =
-                        if (isToday) {
-                            TextDecoration.Underline
-                        } else {
-                            TextDecoration.None
-                        },
+                    textDecoration = TextDecoration.None,
                     color =
                         if (allowedDate) {
                             MaterialTheme.colorScheme.onSurface
